@@ -4,7 +4,7 @@
 | Field | Type | Notes |
 |---|---|---|
 | face | `U` `D` `L` `R` `F` `B` | Face turned |
-| turns | number | -1 counter-clockwise, 1 clockwise, 2 to 9 clockwise repeated that many times |
+| turns | number | -1 counter-clockwise, 1 clockwise, 2 or 3 clockwise repeated that many times |
 | notation | string | As typed, e.g. `U'` |
 Defined in: `src/moves.ts`
 

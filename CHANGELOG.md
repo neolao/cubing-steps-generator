@@ -13,3 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Users can write a repeated move such as `L3` (the face turned clockwise three times), and the x2 / x3 marker now sits clearly apart from the arrow.
 
 - Sheets with many steps now use 4 or 5 columns when that gives larger cubes, so the A4 page is filled as well as possible.
+
+### Changed
+
+- Repeated moves are now limited to `X2` and `X3`: `X4` is a full turn and changes nothing, so larger counts are refused with an explanation next to the field.

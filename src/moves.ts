@@ -19,7 +19,7 @@ export type ParseResult =
 	| { ok: true; moves: Move[] }
 	| { ok: false; error: SequenceError };
 
-/** "" = one clockwise turn, "'" = counter-clockwise, "2" to "9" = repeated clockwise turns. */
+/** "" = one clockwise turn, "'" = counter-clockwise, "2" or "3" = repeated clockwise turns. */
 function parseTurns(suffix: string): number | null {
 	if (suffix === "") {
 		return 1;
@@ -27,7 +27,7 @@ function parseTurns(suffix: string): number | null {
 	if (suffix === "'") {
 		return -1;
 	}
-	return /^[2-9]$/.test(suffix) ? Number(suffix) : null;
+	return /^[23]$/.test(suffix) ? Number(suffix) : null;
 }
 
 function parseToken(token: string, position: number): Move | SequenceError {

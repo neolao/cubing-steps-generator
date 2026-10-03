@@ -94,9 +94,11 @@ describe("applyMove", () => {
 	});
 
 	it.each(["U", "D", "L", "R", "F", "B"])(
-		"%s4 leaves the cube unchanged",
+		"four turns of %s leave the cube unchanged",
 		(face) => {
-			expect(asString(sequence(`${face}4`))).toBe(SOLVED);
+			expect(asString(sequence(`${face} ${face} ${face} ${face}`))).toBe(
+				SOLVED,
+			);
 		},
 	);
 

@@ -22,7 +22,7 @@ const TEMPLATE = `
 		<label for="sequence">Move sequence</label>
 		<textarea id="sequence" rows="4" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"
 			aria-describedby="sequence-hint sequence-error"></textarea>
-		<p id="sequence-hint" class="hint">Moves U D L R F B, each optionally followed by ' (counter-clockwise) or a repeat from 2 to 9 (L3 = L three times), separated by spaces.</p>
+		<p id="sequence-hint" class="hint">Moves U D L R F B, each optionally followed by ' (counter-clockwise) or a repeat of 2 or 3 (L3 = L three times), separated by spaces.</p>
 		<p id="sequence-error" class="error" role="alert" hidden></p>
 		<div class="actions">
 			<button id="example" type="button" class="secondary">Try example</button>

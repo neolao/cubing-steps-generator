@@ -9,7 +9,7 @@ export function describeError({
 	const where = `Move ${position} '${token}'`;
 	if (kind === "bad-suffix") {
 		const face = token.charAt(0);
-		return `${where} is not valid. Write it ${face}, ${face}', ${face}2 or ${face}3 (a repeat from 2 to 9).`;
+		return `${where} is not valid. Write it ${face}, ${face}', ${face}2 or ${face}3 (a repeat of 2 or 3).`;
 	}
 	if (/^[a-z]/.test(token)) {
 		return `${where} is not supported. Use the capital letters U, D, L, R, F or B.`;

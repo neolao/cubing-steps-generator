@@ -22,5 +22,5 @@ The slice of the cube that a move turns. The arrow of a step lies along its laye
 _Sources: `src/arrows.ts`_
 
 ## Repeated move
-A move written with a count from 2 to 9 (`L2`, `L3`): the face is turned clockwise that many times. Its step shows a red xN marker next to the arrow.
+A move written with a count of 2 or 3 (`L2`, `L3`): the face is turned clockwise that many times. Its step shows a red xN marker next to the arrow.
 _Sources: `src/arrows.ts`, `src/render.ts`_
