@@ -124,7 +124,7 @@ function quarterTurn(state: CubeState, face: Face): CubeState {
 }
 
 export function applyMove(state: CubeState, move: Move): CubeState {
-	const quarterTurns = move.turns === -1 ? 3 : move.turns;
+	const quarterTurns = move.turns === -1 ? 3 : move.turns % 4;
 	let next = state;
 	for (let i = 0; i < quarterTurns; i++) {
 		next = quarterTurn(next, move.face);

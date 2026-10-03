@@ -89,6 +89,17 @@ describe("applyMove", () => {
 		},
 	);
 
+	it.each(["U", "D", "L", "R", "F", "B"])("%s3 equals %s'", (face) => {
+		expect(asString(sequence(`${face}3`))).toBe(asString(sequence(`${face}'`)));
+	});
+
+	it.each(["U", "D", "L", "R", "F", "B"])(
+		"%s4 leaves the cube unchanged",
+		(face) => {
+			expect(asString(sequence(`${face}4`))).toBe(SOLVED);
+		},
+	);
+
 	it("does not mutate the previous state", () => {
 		const before = solvedCube();
 		applyMove(before, move("R"));

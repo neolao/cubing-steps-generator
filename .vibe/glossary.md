@@ -1,7 +1,7 @@
 # Ubiquitous Language
 
 ## Move
-One turn of a cube face in standard notation: a face letter (U, D, L, R, F, B), optionally followed by `2` for a half turn or `'` for a counter-clockwise turn.
+One turn of a cube face in standard notation: a face letter (U, D, L, R, F, B), optionally followed by `'` for a counter-clockwise turn or a repeat count (`2` to `9`).
 _Sources: `src/moves.ts`_
 
 ## Move sequence
@@ -21,6 +21,6 @@ _Sources: `src/layout.ts`, `src/sheet.ts`_
 The slice of the cube that a move turns. The arrow of a step lies along its layer, on the visible edge when the layer is on a hidden face.
 _Sources: `src/arrows.ts`_
 
-## Half turn
-A move written with `2`. Its step shows a red x2 marker next to the arrow.
+## Repeated move
+A move written with a count from 2 to 9 (`L2`, `L3`): the face is turned clockwise that many times. Its step shows a red xN marker next to the arrow.
 _Sources: `src/arrows.ts`, `src/render.ts`_

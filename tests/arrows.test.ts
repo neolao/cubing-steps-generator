@@ -15,7 +15,7 @@ function move(notation: string): Move {
 //   U / D  -> top / bottom row of the front face, travelling left / right
 //   L / R  -> left / right column of the front face, travelling down / up
 //   F / B  -> front / back column of the right face, travelling down / up
-const CLOCKWISE: Record<string, Omit<ArrowSpec, "half">> = {
+const CLOCKWISE: Record<string, Omit<ArrowSpec, "repeat">> = {
 	U: { surface: "F", axis: "x", line: 1, sign: -1 },
 	D: { surface: "F", axis: "x", line: -1, sign: 1 },
 	L: { surface: "F", axis: "y", line: -1, sign: -1 },
@@ -28,7 +28,7 @@ describe("arrowFor", () => {
 	it.each(Object.entries(CLOCKWISE))(
 		"places the %s arrow on its layer",
 		(face, expected) => {
-			expect(arrowFor(move(face))).toEqual({ ...expected, half: false });
+			expect(arrowFor(move(face))).toEqual({ ...expected, repeat: 1 });
 		},
 	);
 
@@ -38,15 +38,22 @@ describe("arrowFor", () => {
 			expect(arrowFor(move(`${face}'`))).toEqual({
 				...expected,
 				sign: -expected.sign,
-				half: false,
+				repeat: 1,
 			});
 		},
 	);
 
 	it.each(Object.entries(CLOCKWISE))(
-		"keeps the %s2 arrow like a clockwise turn, marked as half",
+		"keeps the %s2 arrow like a clockwise turn, marked x2",
 		(face, expected) => {
-			expect(arrowFor(move(`${face}2`))).toEqual({ ...expected, half: true });
+			expect(arrowFor(move(`${face}2`))).toEqual({ ...expected, repeat: 2 });
+		},
+	);
+
+	it.each(Object.entries(CLOCKWISE))(
+		"draws %s3 as a clockwise arrow marked x3, not reversed",
+		(face, expected) => {
+			expect(arrowFor(move(`${face}3`))).toEqual({ ...expected, repeat: 3 });
 		},
 	);
 

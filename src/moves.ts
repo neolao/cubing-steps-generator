@@ -3,8 +3,8 @@ export type Face = (typeof FACES)[number];
 
 export interface Move {
 	face: Face;
-	/** 1 = clockwise quarter turn, -1 = counter-clockwise, 2 = half turn. */
-	turns: 1 | -1 | 2;
+	/** -1 = counter-clockwise quarter turn; 1 or more = that many clockwise quarter turns (L3 = 3). */
+	turns: number;
 	notation: string;
 }
 
@@ -19,22 +19,27 @@ export type ParseResult =
 	| { ok: true; moves: Move[] }
 	| { ok: false; error: SequenceError };
 
-const TURNS_BY_SUFFIX = { "": 1, "'": -1, "2": 2 } as const;
+/** "" = one clockwise turn, "'" = counter-clockwise, "2" to "9" = repeated clockwise turns. */
+function parseTurns(suffix: string): number | null {
+	if (suffix === "") {
+		return 1;
+	}
+	if (suffix === "'") {
+		return -1;
+	}
+	return /^[2-9]$/.test(suffix) ? Number(suffix) : null;
+}
 
 function parseToken(token: string, position: number): Move | SequenceError {
 	const face = FACES.find((candidate) => candidate === token[0]);
 	if (!face) {
 		return { kind: "unknown-face", token, position };
 	}
-	const suffix = token.slice(1);
-	if (!(suffix in TURNS_BY_SUFFIX)) {
+	const turns = parseTurns(token.slice(1));
+	if (turns === null) {
 		return { kind: "bad-suffix", token, position };
 	}
-	return {
-		face,
-		turns: TURNS_BY_SUFFIX[suffix as keyof typeof TURNS_BY_SUFFIX],
-		notation: token,
-	};
+	return { face, turns, notation: token };
 }
 
 export function parseSequence(text: string): ParseResult {

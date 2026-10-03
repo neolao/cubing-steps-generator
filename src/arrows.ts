@@ -13,12 +13,12 @@ export interface ArrowSpec {
 	line: -1 | 1;
 	/** 1 = towards the positive end of the axis, -1 = towards the negative end. */
 	sign: 1 | -1;
-	/** Half turn: the sheet adds a "x2" marker. */
-	half: boolean;
+	/** How many times a repeated move is turned (2 or more adds an "xN" marker), 1 otherwise. */
+	repeat: number;
 }
 
 /** Arrow of a clockwise quarter turn of each face. */
-const CLOCKWISE_ARROW: Record<Face, Omit<ArrowSpec, "half">> = {
+const CLOCKWISE_ARROW: Record<Face, Omit<ArrowSpec, "repeat">> = {
 	U: { surface: "F", axis: "x", line: 1, sign: -1 },
 	D: { surface: "F", axis: "x", line: -1, sign: 1 },
 	L: { surface: "F", axis: "y", line: -1, sign: -1 },
@@ -32,6 +32,6 @@ export function arrowFor(move: Move): ArrowSpec {
 	return {
 		...clockwise,
 		sign: move.turns === -1 ? (-clockwise.sign as 1 | -1) : clockwise.sign,
-		half: move.turns === 2,
+		repeat: Math.max(1, move.turns),
 	};
 }

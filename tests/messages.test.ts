@@ -24,14 +24,14 @@ describe("describeError", () => {
 	});
 
 	it("explains how to write a bad suffix", () => {
-		expect(describeError(errorFor("U F3"))).toBe(
-			"Move 2 'F3' is not valid. Write it F, F' or F2.",
+		expect(describeError(errorFor("U F1"))).toBe(
+			"Move 2 'F1' is not valid. Write it F, F', F2 or F3 (a repeat from 2 to 9).",
 		);
 	});
 
 	it("points at a curly apostrophe", () => {
 		expect(describeError(errorFor("R U’"))).toBe(
-			"Move 2 'U’' is not valid. Write it U, U' or U2.",
+			"Move 2 'U’' is not valid. Write it U, U', U2 or U3 (a repeat from 2 to 9).",
 		);
 	});
 });

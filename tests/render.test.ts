@@ -170,9 +170,10 @@ describe("buildScene arrow", () => {
 	});
 });
 
-describe("buildScene half-turn marker", () => {
-	it("is present only for half turns", () => {
-		expect(buildScene(solvedCube(), firstMove("F2")).marker).not.toBeNull();
+describe("buildScene repeat marker", () => {
+	it("is present only for repeated turns and carries the count", () => {
+		expect(buildScene(solvedCube(), firstMove("F2")).marker?.count).toBe(2);
+		expect(buildScene(solvedCube(), firstMove("F3")).marker?.count).toBe(3);
 		expect(buildScene(solvedCube(), firstMove("F")).marker).toBeNull();
 		expect(buildScene(solvedCube(), firstMove("F'")).marker).toBeNull();
 	});
@@ -188,8 +189,8 @@ describe("buildScene half-turn marker", () => {
 			center[0] - arrowMid[0],
 			center[1] - arrowMid[1],
 		);
-		expect(distance).toBeGreaterThan(0.5);
-		expect(distance).toBeLessThan(1.6);
+		expect(distance).toBeGreaterThan(1.3);
+		expect(distance).toBeLessThan(2);
 	});
 });
 
@@ -220,9 +221,15 @@ describe("sceneToSvg", () => {
 		expect(other).not.toContain('id="s1-arrow"');
 	});
 
-	it("shows the x2 marker only for half turns", () => {
-		expect(svg).toContain('data-role="half-turn"');
+	it("writes the repeat count next to the cross", () => {
+		const three = sceneToSvg(buildScene(solvedCube(), firstMove("L3")), "s4");
+		expect(three).toMatch(/>3<\/text>/);
+		expect(three).not.toMatch(/>2<\/text>/);
+	});
+
+	it("shows the repeat marker only for repeated turns", () => {
+		expect(svg).toContain('data-role="repeat"');
 		const quarter = sceneToSvg(buildScene(solvedCube(), firstMove("F")), "s3");
-		expect(quarter).not.toContain('data-role="half-turn"');
+		expect(quarter).not.toContain('data-role="repeat"');
 	});
 });

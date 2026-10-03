@@ -37,8 +37,8 @@ describe("renderSheet", () => {
 		expect(page).toContain('font-weight="bold"');
 	});
 
-	it("marks the half turns of the reference sequence (steps 7, 8 and 14)", () => {
-		expect(count(page, 'data-role="half-turn"')).toBe(3);
+	it("marks the repeated turns of the reference sequence (steps 7, 8 and 14)", () => {
+		expect(count(page, 'data-role="repeat"')).toBe(3);
 	});
 
 	it("gives every arrow gradient its own id", () => {

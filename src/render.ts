@@ -29,8 +29,8 @@ export interface ArrowShape {
 export interface CubeScene {
 	stickers: StickerShape[];
 	arrow: ArrowShape;
-	/** Where the "x2" marker of a half turn goes, null for quarter turns. */
-	marker: { center: Point } | null;
+	/** Where the "xN" marker of a repeated turn goes, null for single turns. */
+	marker: { center: Point; count: number } | null;
 }
 
 /** Half extents of the cube drawing, in cubie-edge units. */
@@ -93,7 +93,7 @@ const ARROW_LENGTH = 2.35;
 const HEAD_LENGTH = 0.309 * ARROW_LENGTH;
 const HEAD_WIDTH = 0.3487 * ARROW_LENGTH;
 const SHAFT_WIDTH = 0.122 * ARROW_LENGTH;
-const MARKER_OFFSET = 0.95;
+const MARKER_OFFSET = 1.5;
 
 interface ArrowFrame {
 	center: Vec3;
@@ -148,7 +148,10 @@ export function buildScene(state: CubeState, move: Move): CubeScene {
 	return {
 		stickers,
 		arrow: arrowShape(frame),
-		marker: spec.half ? { center: project(markerCenter) } : null,
+		marker:
+			spec.repeat >= 2
+				? { center: project(markerCenter), count: spec.repeat }
+				: null,
 	};
 }
 
@@ -156,7 +159,10 @@ const fmt = (n: number): string => String(Math.round(n * 1000) / 1000);
 const pointList = (points: readonly Point[]): string =>
 	points.map(([x, y]) => `${fmt(x)},${fmt(y)}`).join(" ");
 
-function markerSvg([cx, cy]: Point): string {
+function markerSvg({
+	center: [cx, cy],
+	count,
+}: NonNullable<CubeScene["marker"]>): string {
 	const arm = 0.27;
 	const cross = (x: number, y: number) =>
 		`M${fmt(x - arm)},${fmt(y - arm)}L${fmt(x + arm)},${fmt(y + arm)}M${fmt(x + arm)},${fmt(y - arm)}L${fmt(x - arm)},${fmt(y + arm)}`;
@@ -165,11 +171,11 @@ function markerSvg([cx, cy]: Point): string {
 	const textY = cy + 0.3;
 	const textAttrs = `x="${fmt(textX)}" y="${fmt(textY)}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="0.85"`;
 	return [
-		'<g data-role="half-turn" stroke-linecap="round">',
+		'<g data-role="repeat" stroke-linecap="round">',
 		`<path d="${cross(crossX, cy)}" stroke="white" stroke-width="0.22" fill="none"/>`,
 		`<path d="${cross(crossX, cy)}" stroke="rgb(252,1,1)" stroke-width="0.11" fill="none"/>`,
-		`<text ${textAttrs} fill="white" stroke="white" stroke-width="0.1" stroke-linejoin="round">2</text>`,
-		`<text ${textAttrs} fill="rgb(252,1,1)">2</text>`,
+		`<text ${textAttrs} fill="white" stroke="white" stroke-width="0.1" stroke-linejoin="round">${count}</text>`,
+		`<text ${textAttrs} fill="rgb(252,1,1)">${count}</text>`,
 		"</g>",
 	].join("");
 }
@@ -188,6 +194,6 @@ export function sceneToSvg(scene: CubeScene, idPrefix: string): string {
 		`<defs><linearGradient id="${gradientId}" gradientUnits="userSpaceOnUse" x1="${fmt(arrow.tail[0])}" y1="${fmt(arrow.tail[1])}" x2="${fmt(arrow.tip[0])}" y2="${fmt(arrow.tip[1])}">` +
 		'<stop offset="0" stop-color="rgb(255,254,0)"/><stop offset="1" stop-color="rgb(255,0,0)"/></linearGradient></defs>';
 	const arrowSvg = `<polygon points="${pointList(arrow.points)}" fill="url(#${gradientId})" stroke="white" stroke-width="0.085" stroke-linejoin="round"/>`;
-	const marker = scene.marker ? markerSvg(scene.marker.center) : "";
+	const marker = scene.marker ? markerSvg(scene.marker) : "";
 	return `<g>${gradient}${stickers}${arrowSvg}${marker}</g>`;
 }

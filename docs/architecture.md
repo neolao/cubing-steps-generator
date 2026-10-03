@@ -21,10 +21,10 @@ flowchart LR
 
 | Module | Responsibility |
 |---|---|
-| `src/moves.ts` | Strict parser: faces `U D L R F B`, suffix `'` or `2`. Returns the first error with its 1-based position. |
+| `src/moves.ts` | Strict parser: faces `U D L R F B`, suffix `'` or a repeat count `2` to `9` (`L3` = three clockwise turns). Returns the first error with its 1-based position. |
 | `src/cube.ts` | 54-sticker cube state (faces in the order U, R, F, D, L, B). Each face turn is a sticker permutation computed once from 3D positions. Start orientation: yellow top, green front, orange right. |
 | `src/arrows.ts` | Where the arrow of each move goes. U, D, L, R use the front face, F and B use the right face. Hidden-face moves are drawn on the visible edge of their layer. |
-| `src/render.ts` | Isometric projection and drawing of one cube (27 visible stickers, arrow with gradient, `x2` marker). Works in cubie-edge units, so scale is applied by the caller. |
+| `src/render.ts` | Isometric projection and drawing of one cube (27 visible stickers, arrow with gradient, `xN` marker for repeated turns, placed one and a half cubie edges away from the arrow). Works in cubie-edge units, so scale is applied by the caller. |
 | `src/layout.ts` | A4 page at 300 dpi (2481 x 3508), 120 px margins, 3 columns, at most 30 steps per page. Cube and label sizes adapt to the row count. |
 | `src/sheet.ts` | Combines state, layout and drawing into one SVG document per page. Each step shows the cube before its move. |
 | `src/pdf.ts` | Draws each SVG page on an A4 page with jsPDF and svg2pdf.js (vector, text kept as text). |

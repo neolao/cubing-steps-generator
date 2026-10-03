@@ -4,7 +4,7 @@
 | Field | Type | Notes |
 |---|---|---|
 | face | `U` `D` `L` `R` `F` `B` | Face turned |
-| turns | `1` `-1` `2` | Clockwise, counter-clockwise, half turn |
+| turns | number | -1 counter-clockwise, 1 clockwise, 2 to 9 clockwise repeated that many times |
 | notation | string | As typed, e.g. `U'` |
 Defined in: `src/moves.ts`
 
@@ -27,7 +27,7 @@ Defined in: `src/cube.ts`
 | axis | `x` `y` | Direction of travel |
 | line | `-1` `1` | Moved layer across the axis |
 | sign | `-1` `1` | Towards the negative or positive end |
-| half | boolean | Adds the x2 marker |
+| repeat | number | 2 or more adds the xN marker |
 Defined in: `src/arrows.ts`
 
 ## StepPlacement

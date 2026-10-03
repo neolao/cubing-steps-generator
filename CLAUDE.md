@@ -5,7 +5,7 @@
 
 ## Project overview
 
-A static web page that generates a printable PDF of Rubik's Cube solving steps from a text move sequence (e.g. `F L F U' R U F2 L2 U'`). The PDF mirrors the reference "Cube dans cube" sheet (`reference/`): numbered steps (`#1 - F`, `#2 - L`, …) in a 3-column grid, each showing the cube before the move with an arrow and a ×2 marker on half turns; sequences longer than 30 steps continue on a new page. Everything runs client-side in the browser and the site is hosted on GitHub Pages.
+A static web page that generates a printable PDF of Rubik's Cube solving steps from a text move sequence (e.g. `F L F U' R U F2 L2 U'`). The PDF mirrors the reference "Cube dans cube" sheet (`reference/`): numbered steps (`#1 - F`, `#2 - L`, …) in a 3-column grid, each showing the cube before the move with an arrow and a ×N marker on repeated turns (`L2`, `L3`); sequences longer than 30 steps continue on a new page. Everything runs client-side in the browser and the site is hosted on GitHub Pages.
 
 **Stack:** Node.js 22 / TypeScript / Vite / jsPDF + svg2pdf.js / Vitest / Biome
 **Type:** frontend (static site, no backend)

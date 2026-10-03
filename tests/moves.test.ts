@@ -14,6 +14,16 @@ describe("parseSequence", () => {
 		});
 	});
 
+	it("parses a repeat count such as L3 as that many clockwise turns", () => {
+		expect(parseSequence("L3 R9")).toEqual({
+			ok: true,
+			moves: [
+				{ face: "L", turns: 3, notation: "L3" },
+				{ face: "R", turns: 9, notation: "R9" },
+			],
+		});
+	});
+
 	it("accepts all six faces", () => {
 		const result = parseSequence("U D L R F B");
 		expect(result.ok && result.moves.map((m) => m.face)).toEqual([
@@ -54,7 +64,7 @@ describe("parseSequence", () => {
 		});
 	});
 
-	it.each(["F3", "F2'", "F''", "F22"])(
+	it.each(["F1", "F0", "F10", "F22", "F2'", "F3'", "F''"])(
 		"reports a bad suffix for %s",
 		(token) => {
 			expect(parseSequence(`U ${token}`)).toEqual({
