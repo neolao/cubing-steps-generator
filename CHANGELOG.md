@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-03
+
 ### Added
 
 - Users can type a Rubik's Cube move sequence and get a printable A4 sheet of numbered steps, each showing the cube before the move with an arrow on the turned layer and an xN marker for repeated turns, then download it as a PDF generated in the browser. Sequences longer than 30 steps continue on a new page, and invalid moves are explained next to the field.
@@ -23,3 +25,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Repeated moves are now limited to `X2` and `X3`: `X4` is a full turn and changes nothing, so larger counts are refused with an explanation next to the field.
+
+[Unreleased]: https://github.com/neolao/cubing-steps-generator/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/neolao/cubing-steps-generator/releases/tag/v1.1.0

@@ -21,14 +21,14 @@ flowchart LR
 
 | Module | Responsibility |
 |---|---|
-| `src/moves.ts` | Strict parser: faces `U D L R F B`, suffix `'` or a repeat count `2` to `9` (`L3` = three clockwise turns). Returns the first error with its 1-based position. |
-| `src/cube.ts` | 54-sticker cube state (faces in the order U, R, F, D, L, B). Each face turn is a sticker permutation computed once from 3D positions. Start orientation: yellow top, green front, orange right. |
+| `src/moves.ts` | Strict parser: faces `U D L R F B`, suffix `'` or a repeat count `2` or `3` (`L3` = three clockwise turns). Returns the first error with its 1-based position. |
+| `src/cube.ts` | 54-sticker cube state (faces in the order U, R, F, D, L, B). Each face turn is a sticker permutation computed once from 3D positions. The solved cube can be held in any of the 24 valid orientations (default: yellow top, green front, orange right; the right face color is top x front). |
 | `src/arrows.ts` | Where the arrow of each move goes. U, D, L, R use the front face, F and B use the right face. Hidden-face moves are drawn on the visible edge of their layer. |
 | `src/render.ts` | Isometric projection and drawing of one cube (27 visible stickers, arrow with gradient, `xN` marker for repeated turns, placed one and a half cubie edges away from the arrow). Works in cubie-edge units, so scale is applied by the caller. |
-| `src/layout.ts` | A4 page at 300 dpi (2481 x 3508), 120 px margins, 3 to 5 columns, at most 30 steps per page. The column count that gives the largest cubes is chosen; cube and label sizes adapt to the grid. |
-| `src/sheet.ts` | Combines state, layout and drawing into one SVG document per page. Each step shows the cube before its move. |
+| `src/layout.ts` | A4 page at 300 dpi (2481 x 3508), 120 px margins, 3 to 5 columns, at most 30 cells per page (steps, plus the optional final-state cell). The column count that gives the largest cubes is chosen; cube and label sizes adapt to the grid. |
+| `src/sheet.ts` | Combines state, layout and drawing into one SVG document per page. Each step shows the cube before its move; it can start from a scrambled cube and end with a final-state cube without arrow. |
 | `src/pdf.ts` | Draws each SVG page on an A4 page with jsPDF and svg2pdf.js (vector, text kept as text). |
-| `src/app.ts` | The page: field, validation messages, live preview, download button and its states. Dependencies are injected so tests can replace the PDF and save steps. |
+| `src/app.ts` | The page: field, options (final state, orientation, starting sequence), validation messages per field, live preview, download button and its states. Dependencies are injected so tests can replace the PDF and save steps. |
 | `src/messages.ts` | Wording of the parse errors. |
 | `src/main.ts` | Browser entry point: mounts the app and saves the PDF through a temporary link. |
 
