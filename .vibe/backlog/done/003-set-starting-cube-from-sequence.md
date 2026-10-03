@@ -1,5 +1,5 @@
 ---
-status: todo
+status: done
 ---
 # Set Starting Cube From Sequence
 
