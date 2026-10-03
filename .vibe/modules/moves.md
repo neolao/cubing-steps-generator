@@ -1,5 +1,5 @@
 # Module: moves
-**Role:** Parses a text move sequence into validated cube moves.
-**Files:** `src/moves.ts`
-**Exports:** `parseSequence(text: string): string[]`
+**Role:** Strictly parses a text move sequence into validated moves, reporting the first bad move with its position.
+**Files:** `src/moves.ts`, `src/messages.ts`
+**Exports:** `parseSequence(text): ParseResult`, `FACES`, `Move`, `SequenceError`, `describeError(error): string`
 **Depends on:** none

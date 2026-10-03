@@ -3,7 +3,11 @@
 A static web page that turns a text move sequence into a printable PDF of Rubik's Cube solving steps. Everything runs in the browser and the site is hosted on GitHub Pages.
 
 <!-- vibe:begin:features -->
-No released features yet. Planned: enter a move sequence such as `F L F U' R U`, then download a PDF with one numbered step per move.
+- Type a move sequence such as `F L F U' R U` and see the numbered steps as you type.
+- Each step shows the cube before the move, with an arrow on the turned layer and a red x2 for half turns.
+- Download the sheet as a vector PDF on A4 paper. Nothing leaves your browser.
+- Sequences longer than 30 steps continue on new pages.
+- Mistakes are explained next to the field, with the move number to fix.
 <!-- vibe:end:features -->
 
 <!-- vibe:begin:install -->
@@ -23,6 +27,16 @@ Check that everything works with `npm test`.
 <!-- vibe:begin:usage -->
 ## Usage
 
+1. Open the page and type your moves in the "Move sequence" field, or press "Try example".
+2. Check the preview of the A4 sheet.
+3. Press "Download PDF".
+
+Moves use standard notation, separated by spaces or line breaks: a face letter (`U D L R F B`, capitals only), optionally followed by `2` (half turn) or `'` (counter-clockwise), for example `F L F U' L2`.
+
+The cube starts with yellow on top, green in front and orange on the right.
+
+Developer commands:
+
 ```sh
 npm run dev      # start the page locally
 npm run build    # build the static site into dist/
@@ -31,11 +45,10 @@ npm test         # run the tests
 npm run lint     # check and fix code style
 ```
 
-Moves use standard notation, separated by spaces: a face letter (`U D L R F B`), optionally followed by `2` (half turn) or `'` (counter-clockwise), for example `F L F U' L2`.
-
 Pushing to `main` deploys the site to GitHub Pages (enable Pages with the "GitHub Actions" source in the repository settings).
 <!-- vibe:end:usage -->
 
 <!-- vibe:begin:docs-index -->
-No additional documentation yet.
+- [Architecture](docs/architecture.md) — how a sequence becomes a preview and a PDF
+- [Testing](docs/testing.md) — what the tests prove and how to run them
 <!-- vibe:end:docs-index -->

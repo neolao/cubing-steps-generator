@@ -5,9 +5,9 @@
 
 ## Project overview
 
-A static web page that generates a printable PDF of Rubik's Cube solving steps from a text move sequence (e.g. `F L F U' R U F2 L2 U'`). The PDF mirrors the reference "Cube dans cube" sheet: numbered steps (`#1 - F`, `#2 - L`, …) laid out in a grid, with a diagram per move and a ×2 marker on double turns. Everything runs client-side in the browser and the site is hosted on GitHub Pages.
+A static web page that generates a printable PDF of Rubik's Cube solving steps from a text move sequence (e.g. `F L F U' R U F2 L2 U'`). The PDF mirrors the reference "Cube dans cube" sheet (`reference/`): numbered steps (`#1 - F`, `#2 - L`, …) in a 3-column grid, each showing the cube before the move with an arrow and a ×2 marker on half turns; sequences longer than 30 steps continue on a new page. Everything runs client-side in the browser and the site is hosted on GitHub Pages.
 
-**Stack:** Node.js 22 / TypeScript / Vite / pdf-lib / Vitest / Biome
+**Stack:** Node.js 22 / TypeScript / Vite / jsPDF + svg2pdf.js / Vitest / Biome
 **Type:** frontend (static site, no backend)
 
 ## Project language
@@ -19,9 +19,19 @@ English — all documentation, backlog items, code comments, and other generated
 ```
 index.html            # Vite entry point
 src/
-  main.ts             # browser UI wiring
-  moves.ts            # move sequence parsing and validation
+  main.ts             # browser entry: mounts the app, saves the PDF
+  app.ts              # page UI: field, validation, preview, download
+  messages.ts         # user-facing error texts
+  moves.ts            # strict move sequence parsing
+  cube.ts             # facelet cube model, applies the 18 moves
+  arrows.ts           # where each move's arrow is drawn
+  render.ts           # isometric SVG drawing of one cube
+  layout.ts           # A4 grid, size adaptation, pagination (30 steps per page)
+  sheet.ts            # assembles the SVG pages of a sequence
+  pdf.ts              # SVG pages to vector PDF (jsPDF + svg2pdf.js)
+  styles.css          # page styles (the sheet itself always stays white)
 tests/                # Vitest tests, one file per source module
+reference/            # original "Cube dans cube" sheet (PDF and SVG) used as visual reference
 .github/workflows/    # GitHub Pages deployment (lint, test, build, deploy)
 dist/                 # build output (git-ignored)
 ```

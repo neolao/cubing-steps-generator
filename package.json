@@ -25,10 +25,12 @@
 	"homepage": "https://github.com/neolao/cubing-steps-generator#readme",
 	"private": "true",
 	"dependencies": {
-		"pdf-lib": "^1.17.1"
+		"jspdf": "^4.2.1",
+		"svg2pdf.js": "^2.8.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
+		"jsdom": "^29.1.1",
 		"typescript": "^7.0.2",
 		"vite": "^8.3.2",
 		"vitest": "^5.0.3"
