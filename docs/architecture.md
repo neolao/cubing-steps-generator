@@ -25,7 +25,7 @@ flowchart LR
 | `src/cube.ts` | 54-sticker cube state (faces in the order U, R, F, D, L, B). Each face turn is a sticker permutation computed once from 3D positions. Start orientation: yellow top, green front, orange right. |
 | `src/arrows.ts` | Where the arrow of each move goes. U, D, L, R use the front face, F and B use the right face. Hidden-face moves are drawn on the visible edge of their layer. |
 | `src/render.ts` | Isometric projection and drawing of one cube (27 visible stickers, arrow with gradient, `xN` marker for repeated turns, placed one and a half cubie edges away from the arrow). Works in cubie-edge units, so scale is applied by the caller. |
-| `src/layout.ts` | A4 page at 300 dpi (2481 x 3508), 120 px margins, 3 columns, at most 30 steps per page. Cube and label sizes adapt to the row count. |
+| `src/layout.ts` | A4 page at 300 dpi (2481 x 3508), 120 px margins, 3 to 5 columns, at most 30 steps per page. The column count that gives the largest cubes is chosen; cube and label sizes adapt to the grid. |
 | `src/sheet.ts` | Combines state, layout and drawing into one SVG document per page. Each step shows the cube before its move. |
 | `src/pdf.ts` | Draws each SVG page on an A4 page with jsPDF and svg2pdf.js (vector, text kept as text). |
 | `src/app.ts` | The page: field, validation messages, live preview, download button and its states. Dependencies are injected so tests can replace the PDF and save steps. |
@@ -34,8 +34,9 @@ flowchart LR
 
 ## Sizing rules
 
-- Up to 15 steps keep the size of the reference sheet (5 rows), so a short sequence does not get giant cubes.
-- From 16 to 30 steps the rows grow (up to 10) and the cubes shrink to fit.
+- Up to 15 steps keep the layout of the reference sheet (3 columns, 5 rows). Its cube size is also the maximum, so a short sequence does not get giant cubes.
+- From 16 steps the layout tries 3, 4 and 5 columns and keeps the one with the largest cubes (ties keep fewer columns): 4 columns up to 20 steps, then 5 columns, down to 6 rows for 30 steps.
+- Cube size never grows when steps are removed, and never shrinks below what the page needs.
 - Labels never go under 34 px (8 pt printed).
 - From 31 steps, a new page starts after every 30 steps, with the same cube size on every page.
 

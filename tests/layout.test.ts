@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
-	COLUMNS,
 	layoutSheet,
+	MAX_COLUMNS,
 	MAX_STEPS_PER_PAGE,
+	MIN_COLUMNS,
 	PAGE,
 	type StepPlacement,
 } from "../src/layout";
@@ -55,7 +56,8 @@ describe("page constants", () => {
 	it("uses A4 portrait at 300 dpi, three columns and at most 30 steps per page", () => {
 		expect(PAGE.width).toBe(2481);
 		expect(PAGE.height).toBe(3508);
-		expect(COLUMNS).toBe(3);
+		expect(MIN_COLUMNS).toBe(3);
+		expect(MAX_COLUMNS).toBe(5);
 		expect(MAX_STEPS_PER_PAGE).toBe(30);
 	});
 
@@ -135,17 +137,22 @@ describe("layoutSheet size adaptation", () => {
 		expect(one[0]?.scale).toBe(fifteen[0]?.scale);
 	});
 
-	it("shrinks cubes to fit 30 steps on one page without overlap", () => {
+	it("fills the page with 5 columns of 6 rows for 30 steps, without overlap", () => {
 		const pages = layoutSheet(moves(30));
 		const steps = pages[0]?.steps as StepPlacement[];
 		expect(pages).toHaveLength(1);
-		expect(distinct(steps.map((s) => s.cubeY))).toHaveLength(10);
-		expect(steps[0]?.scale).toBeLessThan(
+		const columns = distinct(steps.map((s) => s.cubeX)).length;
+		expect(columns).toBe(5);
+		expect(distinct(steps.map((s) => s.cubeY))).toHaveLength(6);
+		const scale = steps[0]?.scale as number;
+		expect(scale).toBeLessThan(
 			layoutSheet(moves(15))[0]?.steps[0]?.scale as number,
 		);
-		for (let i = 0; i + COLUMNS < steps.length; i++) {
+		// Three columns would need 10 rows and cubes of about 44 px.
+		expect(scale).toBeGreaterThan(70);
+		for (let i = 0; i + columns < steps.length; i++) {
 			const current = steps[i] as StepPlacement;
-			const below = steps[i + COLUMNS] as StepPlacement;
+			const below = steps[i + columns] as StepPlacement;
 			expect(cubeExtent(current).bottom).toBeLessThan(
 				below.labelY - below.fontSize,
 			);
@@ -154,6 +161,46 @@ describe("layoutSheet size adaptation", () => {
 			const box = cubeExtent(step);
 			expect(box.bottom).toBeLessThanOrEqual(PAGE.height - PAGE.margin);
 			expect(box.right).toBeLessThanOrEqual(PAGE.width - PAGE.margin);
+		}
+	});
+
+	it("switches to 4 columns as soon as 3 columns would shrink the cubes", () => {
+		const reference = layoutSheet(moves(15))[0]?.steps[0]?.scale as number;
+		for (const count of [16, 20]) {
+			const steps = layoutSheet(moves(count))[0]?.steps as StepPlacement[];
+			expect(distinct(steps.map((s) => s.cubeX))).toHaveLength(4);
+			expect(steps[0]?.scale).toBe(reference);
+		}
+	});
+
+	it("never enlarges cubes beyond the reference size, whatever the step count", () => {
+		const reference = layoutSheet(moves(15))[0]?.steps[0]?.scale as number;
+		for (let count = 1; count <= 30; count++) {
+			const scale = layoutSheet(moves(count))[0]?.steps[0]?.scale as number;
+			expect(scale).toBeLessThanOrEqual(reference);
+		}
+	});
+
+	it("never makes cubes smaller when there are fewer steps", () => {
+		let previous = Number.POSITIVE_INFINITY;
+		for (let count = 1; count <= 30; count++) {
+			const scale = layoutSheet(moves(count))[0]?.steps[0]?.scale as number;
+			expect(scale).toBeLessThanOrEqual(previous + 1e-9);
+			previous = scale;
+		}
+	});
+
+	it("keeps every step inside the margins for every step count", () => {
+		for (let count = 1; count <= 65; count++) {
+			for (const page of layoutSheet(moves(count))) {
+				for (const step of page.steps) {
+					const box = cubeExtent(step);
+					expect(box.left).toBeGreaterThanOrEqual(PAGE.margin);
+					expect(box.right).toBeLessThanOrEqual(PAGE.width - PAGE.margin);
+					expect(box.top).toBeGreaterThanOrEqual(PAGE.margin);
+					expect(box.bottom).toBeLessThanOrEqual(PAGE.height - PAGE.margin);
+				}
+			}
 		}
 	});
 

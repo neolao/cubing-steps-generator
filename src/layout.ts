@@ -3,13 +3,12 @@ import { CUBE_BOUNDS } from "./render";
 
 /** A4 portrait at 300 dpi; the margin stays clear of the printers' unprintable border. */
 export const PAGE = { width: 2481, height: 3508, margin: 120 };
-export const COLUMNS = 3;
+export const MIN_COLUMNS = 3;
+export const MAX_COLUMNS = 5;
 export const MAX_STEPS_PER_PAGE = 30;
 
 /** Rows of the reference sheet: sheets with fewer steps keep the same cube size. */
 const REFERENCE_ROWS = 5;
-/** Largest cube, as on the reference sheet (cubie edge in px). */
-const MAX_SCALE = 94.714;
 /** 8 pt at 300 dpi. */
 const MIN_FONT_SIZE = 34;
 const FONT_PER_SCALE = 0.66;
@@ -44,30 +43,65 @@ interface SizeRule {
 	fontSize: number;
 }
 
-function fitSize(cellWidth: number, cellHeight: number): SizeRule {
+interface Grid extends SizeRule {
+	columns: number;
+	rows: number;
+	cellWidth: number;
+	cellHeight: number;
+}
+
+function fitSize(
+	cellWidth: number,
+	cellHeight: number,
+	maxScale: number,
+): SizeRule {
 	const widthLimit = (cellWidth * 0.9) / CUBE_WIDTH;
 	const withMinFont =
 		((cellHeight - MIN_FONT_SIZE * LABEL_BLOCK) * CELL_FILL) / CUBE_HEIGHT;
-	if (FONT_PER_SCALE * withMinFont <= MIN_FONT_SIZE) {
-		return {
-			scale: Math.min(withMinFont, widthLimit),
-			fontSize: MIN_FONT_SIZE,
-		};
-	}
-	const proportional =
-		cellHeight / (CUBE_HEIGHT / CELL_FILL + FONT_PER_SCALE * LABEL_BLOCK);
-	const scale = Math.min(proportional, widthLimit, MAX_SCALE);
+	const heightLimit =
+		FONT_PER_SCALE * withMinFont <= MIN_FONT_SIZE
+			? withMinFont
+			: cellHeight / (CUBE_HEIGHT / CELL_FILL + FONT_PER_SCALE * LABEL_BLOCK);
+	const scale = Math.min(heightLimit, widthLimit, maxScale);
 	return { scale, fontSize: Math.max(MIN_FONT_SIZE, FONT_PER_SCALE * scale) };
 }
 
-export function layoutSheet(moves: readonly Move[]): PageLayout[] {
-	const rows =
-		moves.length <= REFERENCE_ROWS * COLUMNS
-			? REFERENCE_ROWS
-			: Math.ceil(Math.min(moves.length, MAX_STEPS_PER_PAGE) / COLUMNS);
-	const cellWidth = (PAGE.width - 2 * PAGE.margin) / COLUMNS;
+function gridFor(columns: number, rows: number, maxScale: number): Grid {
+	const cellWidth = (PAGE.width - 2 * PAGE.margin) / columns;
 	const cellHeight = (PAGE.height - 2 * PAGE.margin) / rows;
-	const { scale, fontSize } = fitSize(cellWidth, cellHeight);
+	return {
+		columns,
+		rows,
+		cellWidth,
+		cellHeight,
+		...fitSize(cellWidth, cellHeight, maxScale),
+	};
+}
+
+/** The reference sheet (3 columns, 5 rows) sets the largest cube size. */
+const REFERENCE_SCALE = gridFor(
+	MIN_COLUMNS,
+	REFERENCE_ROWS,
+	Number.POSITIVE_INFINITY,
+).scale;
+
+/** Picks the column count that gives the largest cubes; ties keep fewer columns. */
+function bestGrid(stepsOnPage: number): Grid {
+	let best: Grid | null = null;
+	for (let columns = MIN_COLUMNS; columns <= MAX_COLUMNS; columns++) {
+		const rows = Math.max(REFERENCE_ROWS, Math.ceil(stepsOnPage / columns));
+		const grid = gridFor(columns, rows, REFERENCE_SCALE);
+		if (!best || grid.scale > best.scale + 1e-9) {
+			best = grid;
+		}
+	}
+	return best as Grid;
+}
+
+export function layoutSheet(moves: readonly Move[]): PageLayout[] {
+	const { columns, cellWidth, cellHeight, scale, fontSize } = bestGrid(
+		Math.min(moves.length, MAX_STEPS_PER_PAGE),
+	);
 	const labelBlock = fontSize * LABEL_BLOCK;
 
 	const pages: PageLayout[] = [];
@@ -79,8 +113,8 @@ export function layoutSheet(moves: readonly Move[]): PageLayout[] {
 		const steps = moves
 			.slice(start, start + MAX_STEPS_PER_PAGE)
 			.map((move, i): StepPlacement => {
-				const column = i % COLUMNS;
-				const row = Math.floor(i / COLUMNS);
+				const column = i % columns;
+				const row = Math.floor(i / columns);
 				const cellX = PAGE.margin + column * cellWidth;
 				const cellY = PAGE.margin + row * cellHeight;
 				return {

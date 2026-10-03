@@ -10,7 +10,7 @@ Tests run with Vitest (`npm test`), one file per module in `tests/`.
 | `tests/cube.test.ts` | The 6 clockwise turns from a solved cube match sticker strings derived by hand. Four quarter turns, `X3` equal to `X'`, `X4` doing nothing, a turn and its inverse, and six repetitions of `R U R' U'` return to solved. Colour counts and centers stay intact. |
 | `tests/arrows.test.ts` | Arrow placement table read from the reference sheet, plus a physical check: each arrow points where the layer's stickers move. |
 | `tests/render.test.ts` | Isometric projection, reference sticker shape, state-before-move colours, arrow direction and bounds, `xN` marker and its distance from the arrow, SVG output. |
-| `tests/layout.test.ts` | Grid for 1, 15, 30, 31 and 65 steps: sizes, margins, label size floor, no overlap, pagination and numbering. |
+| `tests/layout.test.ts` | Grid for 1 to 65 steps: column choice (3, 4 or 5), cube size never above the reference and never growing with more steps, margins, label size floor, no overlap, pagination and numbering. |
 | `tests/sheet.test.ts` | Whole-page SVG: 15 cubes for the reference sequence, labels, unique gradient ids, blank page. |
 | `tests/pdf.test.ts` | A4 vector PDF, text kept as text, page count. |
 | `tests/messages.test.ts`, `tests/app.test.ts` | Error wording, and the page states: empty, valid, invalid with out-of-date preview, download busy, success and failure. |

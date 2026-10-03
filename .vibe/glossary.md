@@ -14,7 +14,7 @@ One numbered entry of the sheet: the cube as it is before a move, the move's lab
 _Sources: `src/layout.ts`, `src/sheet.ts`_
 
 ## Sheet
-The printable result: steps in a grid of three columns on A4 pages, at most 30 steps per page.
+The printable result: steps in a grid of three to five columns on A4 pages, at most 30 steps per page.
 _Sources: `src/layout.ts`, `src/sheet.ts`_
 
 ## Layer

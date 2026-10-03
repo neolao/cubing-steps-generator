@@ -6,7 +6,7 @@ A static web page that turns a text move sequence into a printable PDF of Rubik'
 - Type a move sequence such as `F L F U' R U` and see the numbered steps as you type.
 - Each step shows the cube before the move, with an arrow on the turned layer and a red x2, x3… for repeated turns.
 - Download the sheet as a vector PDF on A4 paper. Nothing leaves your browser.
-- Sequences longer than 30 steps continue on new pages.
+- Longer sequences use 4 or 5 columns to keep the cubes large; sequences over 30 steps continue on new pages.
 - Mistakes are explained next to the field, with the move number to fix.
 <!-- vibe:end:features -->
 
