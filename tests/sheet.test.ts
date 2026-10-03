@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { applySequence, solvedCube } from "../src/cube";
 import { type Move, parseSequence } from "../src/moves";
 import { renderSheet } from "../src/sheet";
 
@@ -70,5 +71,52 @@ describe("renderSheet", () => {
 			[...p.matchAll(/linearGradient id="([^"]+)"/g)].map((m) => m[1]),
 		);
 		expect(new Set(ids).size).toBe(31);
+	});
+});
+
+describe("renderSheet options", () => {
+	const RED = "rgb(215,13,13)";
+	const ORANGE = "rgb(255,172,5)";
+
+	it("starts the first cube from the given cube state", () => {
+		const start = applySequence(solvedCube(), moves("F"));
+		const [page] = renderSheet(moves("L"), { start }) as [string];
+		// after F the top face shows a red row; a solved cube shows none
+		expect(count(page, RED)).toBe(3);
+		expect(count((renderSheet(moves("L")) as [string])[0], RED)).toBe(0);
+	});
+
+	it("is identical to the plain sheet with default options", () => {
+		expect(
+			renderSheet(moves(REFERENCE), { start: solvedCube(), finalState: false }),
+		).toEqual(renderSheet(moves(REFERENCE)));
+	});
+
+	it("draws the cube after the last move, labelled and without arrow", () => {
+		const [page] = renderSheet(moves("R"), { finalState: true }) as [string];
+		expect(count(page, 'data-role="step"')).toBe(2);
+		expect(page).toContain(">Final state</text>");
+		expect(count(page, "linearGradient id=")).toBe(1);
+		// final cube = solved cube after R: the front face now has one orange... column
+		expect(count(page, ORANGE)).toBeGreaterThan(
+			count((renderSheet(moves("R")) as [string])[0], ORANGE),
+		);
+	});
+
+	it("follows the start state in the final cube", () => {
+		const start = applySequence(solvedCube(), moves("F"));
+		const [page] = renderSheet(moves("F'"), { start, finalState: true }) as [
+			string,
+		];
+		// F' undoes the start: the final cube is solved, so only the first cube shows red
+		expect(count(page, RED)).toBe(3);
+	});
+
+	it("puts the final cube alone on a second page after 30 steps", () => {
+		const long = Array.from({ length: 30 }, () => "R").join(" ");
+		const pages = renderSheet(moves(long), { finalState: true });
+		expect(pages).toHaveLength(2);
+		expect(pages[1]).toContain(">Final state</text>");
+		expect(count(pages[1] as string, 'data-role="step"')).toBe(1);
 	});
 });

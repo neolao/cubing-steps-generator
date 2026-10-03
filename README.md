@@ -7,6 +7,7 @@ A static web page that turns a text move sequence into a printable PDF of Rubik'
 - Each step shows the cube before the move, with an arrow on the turned layer and a red x2, x3… for repeated turns.
 - Download the sheet as a vector PDF on A4 paper. Nothing leaves your browser.
 - Longer sequences use 4 or 5 columns to keep the cubes large; sequences over 30 steps continue on new pages.
+- Optionally choose the starting orientation, start from a scrambled cube, and add a final-state cube.
 - Mistakes are explained next to the field, with the move number to fix.
 <!-- vibe:end:features -->
 
@@ -31,9 +32,12 @@ Check that everything works with `npm test`.
 2. Check the preview of the A4 sheet.
 3. Press "Download PDF".
 
-Moves use standard notation, separated by spaces or line breaks: a face letter (`U D L R F B`, capitals only), optionally followed by `'` (counter-clockwise) or a repeat count from `2` to `9` (`L3` turns the left face clockwise three times, shown with a red x3), for example `F L F U' L2`.
+Moves use standard notation, separated by spaces or line breaks: a face letter (`U D L R F B`, capitals only), optionally followed by `'` (counter-clockwise) or a repeat count of `2` or `3` (`L3` turns the left face clockwise three times, shown with a red x3), for example `F L F U' L2`.
 
-The cube starts with yellow on top, green in front and orange on the right.
+By default the cube starts solved, with yellow on top, green in front and orange on the right. Under "Options" you can:
+
+- tick "Show final state" to add one last cube after the final step;
+- open "Starting position" to choose which colors are on top and in front, and to enter a starting sequence (a scramble applied before step 1, not drawn as steps).
 
 Developer commands:
 

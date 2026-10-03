@@ -21,7 +21,8 @@ const CUBE_WIDTH = 2 * CUBE_BOUNDS.halfWidth;
 export interface StepPlacement {
 	/** 1-based position in the whole sequence. */
 	index: number;
-	move: Move;
+	/** The move drawn on the cube, null for the final state. */
+	move: Move | null;
 	label: string;
 	labelX: number;
 	/** Text baseline. */
@@ -98,19 +99,31 @@ function bestGrid(stepsOnPage: number): Grid {
 	return best as Grid;
 }
 
-export function layoutSheet(moves: readonly Move[]): PageLayout[] {
+/** The cells of the sheet: one per move, then the final state when asked (never alone). */
+function sheetCells(
+	moves: readonly Move[],
+	finalState: boolean,
+): (Move | null)[] {
+	return finalState && moves.length > 0 ? [...moves, null] : [...moves];
+}
+
+export function layoutSheet(
+	moves: readonly Move[],
+	finalState = false,
+): PageLayout[] {
+	const cells = sheetCells(moves, finalState);
 	const { columns, cellWidth, cellHeight, scale, fontSize } = bestGrid(
-		Math.min(moves.length, MAX_STEPS_PER_PAGE),
+		Math.min(cells.length, MAX_STEPS_PER_PAGE),
 	);
 	const labelBlock = fontSize * LABEL_BLOCK;
 
 	const pages: PageLayout[] = [];
 	for (
 		let start = 0;
-		start === 0 || start < moves.length;
+		start === 0 || start < cells.length;
 		start += MAX_STEPS_PER_PAGE
 	) {
-		const steps = moves
+		const steps = cells
 			.slice(start, start + MAX_STEPS_PER_PAGE)
 			.map((move, i): StepPlacement => {
 				const column = i % columns;
@@ -120,7 +133,7 @@ export function layoutSheet(moves: readonly Move[]): PageLayout[] {
 				return {
 					index: start + i + 1,
 					move,
-					label: `#${start + i + 1} - ${move.notation}`,
+					label: move ? `#${start + i + 1} - ${move.notation}` : "Final state",
 					labelX: cellX,
 					labelY: cellY + fontSize * LABEL_BASELINE,
 					fontSize,

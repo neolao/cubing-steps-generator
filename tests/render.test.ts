@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { applySequence, solvedCube } from "../src/cube";
 import { type Move, parseSequence } from "../src/moves";
 import {
+	buildFinalScene,
 	buildScene,
 	CUBE_BOUNDS,
 	type Point,
@@ -231,5 +232,17 @@ describe("sceneToSvg", () => {
 		expect(svg).toContain('data-role="repeat"');
 		const quarter = sceneToSvg(buildScene(solvedCube(), firstMove("F")), "s3");
 		expect(quarter).not.toContain('data-role="repeat"');
+	});
+});
+
+describe("final state scene", () => {
+	it("draws the 27 stickers without arrow or marker", () => {
+		const scene = buildFinalScene(solvedCube());
+		expect(scene.stickers).toHaveLength(27);
+		expect("arrow" in scene).toBe(false);
+		const svg = sceneToSvg(scene, "f");
+		expect(svg).not.toContain("linearGradient");
+		expect(svg).not.toContain('data-role="repeat"');
+		expect(svg.match(/<polygon/g)).toHaveLength(27);
 	});
 });

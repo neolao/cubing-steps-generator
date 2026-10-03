@@ -240,3 +240,38 @@ describe("layoutSheet pagination", () => {
 		expect(steps.map((s) => s.move)).toEqual(list);
 	});
 });
+
+describe("layoutSheet with a final state", () => {
+	it("adds one unnumbered cell after the last step", () => {
+		const steps = layoutSheet(moves(15), true)[0]?.steps as StepPlacement[];
+		expect(steps).toHaveLength(16);
+		const final = steps[15] as StepPlacement;
+		expect(final.label).toBe("Final state");
+		expect(final.move).toBeNull();
+		expect(final.index).toBe(16);
+		expect(steps.slice(0, 15).every((s) => s.move !== null)).toBe(true);
+	});
+
+	it("keeps the sheet unchanged when no final state is asked", () => {
+		expect(layoutSheet(moves(15), false)).toEqual(layoutSheet(moves(15)));
+	});
+
+	it("puts the final state alone on a new page after exactly 30 steps", () => {
+		const pages = layoutSheet(moves(30), true);
+		expect(pages).toHaveLength(2);
+		expect(pages[0]?.steps).toHaveLength(30);
+		expect(pages[1]?.steps.map((s) => s.label)).toEqual(["Final state"]);
+	});
+
+	it("keeps the final state on the same page after 29 steps", () => {
+		const pages = layoutSheet(moves(29), true);
+		expect(pages).toHaveLength(1);
+		expect(pages[0]?.steps).toHaveLength(30);
+	});
+
+	it("does not draw a final state for an empty sequence", () => {
+		const pages = layoutSheet([], true);
+		expect(pages).toHaveLength(1);
+		expect(pages[0]?.steps).toHaveLength(0);
+	});
+});

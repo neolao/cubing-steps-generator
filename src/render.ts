@@ -26,8 +26,12 @@ export interface ArrowShape {
 	tip: Point;
 }
 
-export interface CubeScene {
+/** A cube alone, as drawn for the final state. */
+export interface StateScene {
 	stickers: StickerShape[];
+}
+
+export interface CubeScene extends StateScene {
 	arrow: ArrowShape;
 	/** Where the "xN" marker of a repeated turn goes, null for single turns. */
 	marker: { center: Point; count: number } | null;
@@ -131,12 +135,18 @@ function arrowShape({ center, along, across }: ArrowFrame): ArrowShape {
 	};
 }
 
-export function buildScene(state: CubeState, move: Move): CubeScene {
-	const stickers = VISIBLE_FACES.flatMap((face) =>
-		Array.from({ length: 9 }, (_, i) =>
-			stickerShape(state, face, Math.floor(i / 3), i % 3),
+export function buildFinalScene(state: CubeState): StateScene {
+	return {
+		stickers: VISIBLE_FACES.flatMap((face) =>
+			Array.from({ length: 9 }, (_, i) =>
+				stickerShape(state, face, Math.floor(i / 3), i % 3),
+			),
 		),
-	);
+	};
+}
+
+export function buildScene(state: CubeState, move: Move): CubeScene {
+	const { stickers } = buildFinalScene(state);
 	const spec = arrowFor(move);
 	const frame = arrowFrame(spec);
 	// The marker moves from the arrow towards the middle of the face.
@@ -181,15 +191,21 @@ function markerSvg({
 }
 
 /** SVG group of one cube, centered on the origin, one cubie edge = 1 user unit. */
-export function sceneToSvg(scene: CubeScene, idPrefix: string): string {
-	const gradientId = `${idPrefix}-arrow`;
-	const { arrow } = scene;
+export function sceneToSvg(
+	scene: StateScene | CubeScene,
+	idPrefix: string,
+): string {
 	const stickers = scene.stickers
 		.map(
 			(s) =>
 				`<polygon points="${pointList(s.points)}" fill="${RGB[s.color]}" stroke="black" stroke-width="0.015" stroke-linejoin="round"/>`,
 		)
 		.join("");
+	if (!("arrow" in scene)) {
+		return `<g>${stickers}</g>`;
+	}
+	const gradientId = `${idPrefix}-arrow`;
+	const { arrow } = scene;
 	const gradient =
 		`<defs><linearGradient id="${gradientId}" gradientUnits="userSpaceOnUse" x1="${fmt(arrow.tail[0])}" y1="${fmt(arrow.tail[1])}" x2="${fmt(arrow.tip[0])}" y2="${fmt(arrow.tip[1])}">` +
 		'<stop offset="0" stop-color="rgb(255,254,0)"/><stop offset="1" stop-color="rgb(255,0,0)"/></linearGradient></defs>';

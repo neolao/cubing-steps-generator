@@ -2,9 +2,14 @@ import { describe, expect, it } from "vitest";
 import {
 	applyMove,
 	applySequence,
+	COLORS,
 	type Color,
 	type CubeState,
+	DEFAULT_ORIENTATION,
+	isValidOrientation,
+	oppositeColor,
 	solvedCube,
+	validFrontColors,
 } from "../src/cube";
 import { type Move, parseSequence } from "../src/moves";
 
@@ -130,5 +135,82 @@ describe("applyMove", () => {
 			(index) => LETTER_BY_COLOR[state[index] as Color],
 		);
 		expect(centers.join("")).toBe("URFDLB");
+	});
+});
+
+const FACE_START = { U: 0, R: 9, F: 18, D: 27, L: 36, B: 45 } as const;
+const faceColor = (state: CubeState, face: keyof typeof FACE_START): Color =>
+	state[FACE_START[face]] as Color;
+
+describe("orientations", () => {
+	it("defaults to yellow on top and green in front, the current solved cube", () => {
+		expect(DEFAULT_ORIENTATION).toEqual({ top: "yellow", front: "green" });
+		expect(asString(solvedCube(DEFAULT_ORIENTATION))).toBe(SOLVED);
+	});
+
+	it.each([
+		// top, front, right (right = top x front, known color schemes)
+		["white", "green", "red"],
+		["white", "red", "blue"],
+		["green", "white", "orange"],
+		["yellow", "red", "green"],
+		["blue", "yellow", "orange"],
+		["orange", "green", "white"],
+	] as const)(
+		"holds %s on top and %s in front with %s on the right",
+		(top, front, right) => {
+			const state = solvedCube({ top, front });
+			expect(faceColor(state, "U")).toBe(top);
+			expect(faceColor(state, "F")).toBe(front);
+			expect(faceColor(state, "R")).toBe(right);
+			expect(faceColor(state, "D")).toBe(oppositeColor(top));
+			expect(faceColor(state, "B")).toBe(oppositeColor(front));
+			expect(faceColor(state, "L")).toBe(oppositeColor(right));
+		},
+	);
+
+	it("builds a solved cube with nine stickers per face for all 24 orientations", () => {
+		let count = 0;
+		for (const top of COLORS) {
+			for (const front of validFrontColors(top)) {
+				count++;
+				const state = solvedCube({ top, front });
+				for (const face of Object.keys(
+					FACE_START,
+				) as (keyof typeof FACE_START)[]) {
+					const start = FACE_START[face];
+					expect(new Set(state.slice(start, start + 9)).size).toBe(1);
+				}
+				expect(new Set(state).size).toBe(6);
+			}
+		}
+		expect(count).toBe(24);
+	});
+
+	it("applies moves relative to the chosen orientation", () => {
+		const state = applyMove(
+			solvedCube({ top: "white", front: "green" }),
+			move("F"),
+		);
+		// F turns the face in front: the left face (orange) feeds the top row
+		expect(faceColor(state, "F")).toBe("green");
+		expect(state.slice(0, 9).filter((c) => c === "white")).toHaveLength(6);
+		expect(state.slice(0, 9).filter((c) => c === "orange")).toHaveLength(3);
+	});
+
+	it("offers four front colors for each top color, never the top or its opposite", () => {
+		for (const top of COLORS) {
+			const fronts = validFrontColors(top);
+			expect(fronts).toHaveLength(4);
+			expect(fronts).not.toContain(top);
+			expect(fronts).not.toContain(oppositeColor(top));
+		}
+	});
+
+	it("rejects the same color or opposite colors for top and front", () => {
+		expect(isValidOrientation({ top: "white", front: "white" })).toBe(false);
+		expect(isValidOrientation({ top: "white", front: "yellow" })).toBe(false);
+		expect(isValidOrientation({ top: "white", front: "blue" })).toBe(true);
+		expect(() => solvedCube({ top: "red", front: "orange" })).toThrow();
 	});
 });

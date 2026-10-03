@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Users can write a repeated move such as `L3` (the face turned clockwise three times), and the x2 / x3 marker now sits clearly apart from the arrow.
 
+- Users can choose how the cube is held at the start (top and front colors, only valid combinations offered), and the whole sheet follows that orientation.
+
+- Users can enter an optional starting sequence (a scramble) so the first cube shows that state; its moves are not drawn as steps and mistakes in it are explained next to its own field.
+
+- Users can tick "Show final state" to add a last, labelled cube after the final step, without arrow or number.
+
 - Sheets with many steps now use 4 or 5 columns when that gives larger cubes, so the A4 page is filled as well as possible.
 
 ### Changed

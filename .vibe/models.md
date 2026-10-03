@@ -8,6 +8,14 @@
 | notation | string | As typed, e.g. `U'` |
 Defined in: `src/moves.ts`
 
+## Orientation
+| Field | Type | Notes |
+|---|---|---|
+| top | Color | Color of the top face; default yellow |
+| front | Color | Color of the front face, never the top color or its opposite; default green |
+The right face color is top x front. 24 valid orientations.
+Defined in: `src/cube.ts`
+
 ## SequenceError
 | Field | Type | Notes |
 |---|---|---|
@@ -17,7 +25,7 @@ Defined in: `src/moves.ts`
 Defined in: `src/moves.ts`
 
 ## CubeState
-54 colors in the order of faces U, R, F, D, L, B, 9 stickers each, read row by row. Solved: yellow top, orange right, green front, white bottom, red left, blue back.
+54 colors in the order of faces U, R, F, D, L, B, 9 stickers each, read row by row. Solved by default: yellow top, orange right, green front, white bottom, red left, blue back (other orientations: see Orientation).
 Defined in: `src/cube.ts`
 
 ## ArrowSpec
@@ -31,5 +39,5 @@ Defined in: `src/cube.ts`
 Defined in: `src/arrows.ts`
 
 ## StepPlacement
-Position, label, font size and cube scale of one step on a page.
+Position, label, font size and cube scale of one step on a page. Its move is null for the final-state cell.
 Defined in: `src/layout.ts`

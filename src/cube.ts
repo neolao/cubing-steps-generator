@@ -19,13 +19,34 @@ export const FACE_NORMAL: Record<Face, Vec> = {
 	B: [0, 0, -1],
 };
 
-const FACE_COLOR: Record<Face, Color> = {
-	U: "yellow",
-	R: "orange",
-	F: "green",
-	D: "white",
-	L: "red",
-	B: "blue",
+export const COLORS: readonly Color[] = [
+	"yellow",
+	"orange",
+	"green",
+	"white",
+	"red",
+	"blue",
+];
+
+/** Where each color sits on the default cube (yellow up, green in front, orange on the right). */
+const COLOR_DIRECTION: Record<Color, Vec> = {
+	yellow: [0, 1, 0],
+	white: [0, -1, 0],
+	orange: [1, 0, 0],
+	red: [-1, 0, 0],
+	green: [0, 0, 1],
+	blue: [0, 0, -1],
+};
+
+/** How the cube is held at the start: the colors of its top and front faces. */
+export interface Orientation {
+	top: Color;
+	front: Color;
+}
+
+export const DEFAULT_ORIENTATION: Orientation = {
+	top: "yellow",
+	front: "green",
 };
 
 /** Cubie coordinates (each -1..1) of the sticker at `row`, `col` of `face`. */
@@ -111,8 +132,46 @@ const QUARTER_TURN_DESTINATIONS: Record<Face, readonly number[]> = {
 	B: quarterTurnDestinations("B"),
 };
 
-export function solvedCube(): CubeState {
-	return FACE_ORDER.flatMap((face) => Array<Color>(9).fill(FACE_COLOR[face]));
+function colorAt(direction: Vec): Color {
+	return COLORS.find(
+		(color) => dot(COLOR_DIRECTION[color], direction) === 1,
+	) as Color;
+}
+
+export function oppositeColor(color: Color): Color {
+	const [x, y, z] = COLOR_DIRECTION[color];
+	return colorAt([-x, -y, -z]);
+}
+
+export function isValidOrientation({ top, front }: Orientation): boolean {
+	return top !== front && front !== oppositeColor(top);
+}
+
+/** The four colors that can face the front when `top` is on top. */
+export function validFrontColors(top: Color): Color[] {
+	return COLORS.filter((front) => isValidOrientation({ top, front }));
+}
+
+/** A solved cube held in `orientation`; the right face color is top x front. */
+export function solvedCube(
+	orientation: Orientation = DEFAULT_ORIENTATION,
+): CubeState {
+	if (!isValidOrientation(orientation)) {
+		throw new Error(
+			`Invalid orientation: ${orientation.top} on top, ${orientation.front} in front`,
+		);
+	}
+	const { top, front } = orientation;
+	const right = colorAt(cross(COLOR_DIRECTION[top], COLOR_DIRECTION[front]));
+	const faceColor: Record<Face, Color> = {
+		U: top,
+		D: oppositeColor(top),
+		F: front,
+		B: oppositeColor(front),
+		R: right,
+		L: oppositeColor(right),
+	};
+	return FACE_ORDER.flatMap((face) => Array<Color>(9).fill(faceColor[face]));
 }
 
 function quarterTurn(state: CubeState, face: Face): CubeState {
