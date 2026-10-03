@@ -1,0 +1,36 @@
+{
+	"name": "cubing-steps-generator",
+	"version": "1.0.0",
+	"description": "Static web page that generates a printable PDF of Rubik's Cube solving steps from a text move sequence",
+	"main": "index.js",
+	"scripts": {
+		"test": "vitest run",
+		"dev": "vite",
+		"build": "tsc --noEmit && vite build",
+		"preview": "vite preview",
+		"lint": "biome check --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/neolao/cubing-steps-generator.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"type": "module",
+	"bugs": {
+		"url": "https://github.com/neolao/cubing-steps-generator/issues"
+	},
+	"homepage": "https://github.com/neolao/cubing-steps-generator#readme",
+	"private": "true",
+	"dependencies": {
+		"pdf-lib": "^1.17.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.15",
+		"typescript": "^7.0.2",
+		"vite": "^8.3.2",
+		"vitest": "^5.0.3"
+	}
+}
