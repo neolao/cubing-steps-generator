@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- The white outline around the x2 / x3 count is now visible in the downloaded PDF, as it is on the page.
+
 ## [1.1.0] - 2026-10-03
 
 ### Added

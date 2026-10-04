@@ -169,6 +169,13 @@ const fmt = (n: number): string => String(Math.round(n * 1000) / 1000);
 const pointList = (points: readonly Point[]): string =>
 	points.map(([x, y]) => `${fmt(x)},${fmt(y)}`).join(" ");
 
+/** Eight offsets around a glyph: white copies there form its outline. A text stroke would not scale in the PDF. */
+const OUTLINE_RADIUS = 0.05;
+const outlineOffsets: Point[] = Array.from({ length: 8 }, (_, i) => [
+	OUTLINE_RADIUS * Math.cos((i * Math.PI) / 4),
+	OUTLINE_RADIUS * Math.sin((i * Math.PI) / 4),
+]);
+
 function markerSvg({
 	center: [cx, cy],
 	count,
@@ -179,13 +186,14 @@ function markerSvg({
 	const crossX = cx - 0.42;
 	const textX = cx + 0.08;
 	const textY = cy + 0.3;
-	const textAttrs = `x="${fmt(textX)}" y="${fmt(textY)}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="0.85"`;
+	const glyph = (dx: number, dy: number, fill: string) =>
+		`<text x="${fmt(textX + dx)}" y="${fmt(textY + dy)}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="0.85" fill="${fill}">${count}</text>`;
 	return [
 		'<g data-role="repeat" stroke-linecap="round">',
 		`<path d="${cross(crossX, cy)}" stroke="white" stroke-width="0.22" fill="none"/>`,
 		`<path d="${cross(crossX, cy)}" stroke="rgb(252,1,1)" stroke-width="0.11" fill="none"/>`,
-		`<text ${textAttrs} fill="white" stroke="white" stroke-width="0.1" stroke-linejoin="round">${count}</text>`,
-		`<text ${textAttrs} fill="rgb(252,1,1)">${count}</text>`,
+		...outlineOffsets.map(([dx, dy]) => glyph(dx, dy, "white")),
+		glyph(0, 0, "rgb(252,1,1)"),
 		"</g>",
 	].join("");
 }

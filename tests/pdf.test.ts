@@ -43,6 +43,19 @@ describe("buildPdf", () => {
 		expect(pdf).toContain("(#2 - L)");
 	});
 
+	it("keeps the white outline around the repeat count as visible drawing", async () => {
+		const pdf = asText(await buildPdf(renderSheet(moves("L2"))));
+		// Stroked text keeps a 0.1 pt line in the PDF (invisible): the outline
+		// must be white copies of the digit, filled, around the red one.
+		expect(pdf).not.toMatch(/2 Tr/);
+		const draws = pdf.match(/\(2\) Tj/g) ?? [];
+		expect(draws.length).toBeGreaterThanOrEqual(9);
+		const lastWhite = pdf.lastIndexOf("1. g", pdf.lastIndexOf("(2) Tj"));
+		const lastRed = pdf.lastIndexOf("0.988 0.004 0.004 rg");
+		expect(lastWhite).toBeGreaterThan(-1);
+		expect(lastRed).toBeGreaterThan(lastWhite);
+	});
+
 	it("adds a page for every 30 steps", async () => {
 		const long = Array.from({ length: 31 }, () => "R").join(" ");
 		const pdf = asText(await buildPdf(renderSheet(moves(long))));
