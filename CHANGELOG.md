@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- The page is now optimized for search engines: a descriptive title and summary, a preview image and card when the link is shared, a site icon, a short text section explaining the notation and the PDF, and the files that help search engines discover the site.
+
 ## [1.1.1] - 2026-10-04
 
 ### Fixed

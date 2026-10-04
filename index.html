@@ -3,11 +3,77 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Cubing Steps Generator</title>
-		<link rel="icon" href="data:," />
+		<title>Rubik's Cube Steps to PDF – Cubing Steps Generator</title>
+		<meta name="description" content="Turn a Rubik's Cube move sequence into a printable PDF of numbered solving steps with arrows. Free, runs in your browser." />
+		<link rel="canonical" href="https://neolao.github.io/cubing-steps-generator/" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#1f5fd6" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Cubing Steps Generator" />
+		<meta property="og:title" content="Rubik's Cube Steps to PDF – Cubing Steps Generator" />
+		<meta property="og:description" content="Turn a Rubik's Cube move sequence into a printable PDF of numbered solving steps with arrows. Free, runs in your browser." />
+		<meta property="og:url" content="https://neolao.github.io/cubing-steps-generator/" />
+		<meta property="og:image" content="https://neolao.github.io/cubing-steps-generator/og-image.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Four numbered Rubik's Cube steps, each showing the cube with an arrow on the layer to turn" />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="favicon-48x48.png" type="image/png" sizes="48x48" />
+		<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebApplication",
+				"name": "Cubing Steps Generator",
+				"url": "https://neolao.github.io/cubing-steps-generator/",
+				"description": "Turn a Rubik's Cube move sequence into a printable PDF of numbered solving steps with arrows.",
+				"applicationCategory": "UtilitiesApplication",
+				"operatingSystem": "Any",
+				"browserRequirements": "Requires JavaScript",
+				"inLanguage": "en",
+				"image": "https://neolao.github.io/cubing-steps-generator/og-image.png",
+				"offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+			}
+		</script>
 	</head>
 	<body>
 		<main id="app"></main>
+		<section class="about">
+			<h2>How it works</h2>
+			<p>
+				Cubing Steps Generator turns a Rubik's Cube move sequence into a printable
+				PDF of numbered solving steps. Each step shows the cube before the move,
+				with an arrow on the layer to turn. Repeated turns carry a red x2 or x3
+				marker.
+			</p>
+			<h2>Move notation</h2>
+			<p>
+				Write the faces U (up), D (down), L (left), R (right), F (front) and B
+				(back), separated by spaces. A turn is clockwise by default; add an
+				apostrophe for counter-clockwise (U'), or a 2 or 3 to repeat it (L2, L3).
+				Example: F L F U' R U F2 L2 U'.
+			</p>
+			<h2>Questions</h2>
+			<h3>Is the PDF generated on a server?</h3>
+			<p>
+				No. The sheet is built in your browser and nothing is uploaded, so your
+				sequences stay private.
+			</p>
+			<h3>How long can a sequence be?</h3>
+			<p>
+				Any length. A page holds up to 30 steps, and longer sequences continue on
+				new A4 pages.
+			</p>
+			<h3>Can I start from a scrambled cube?</h3>
+			<p>
+				Yes. Choose the starting orientation, give a starting sequence, and add a
+				final-state cube after the last step.
+			</p>
+		</section>
 		<script type="module" src="/src/main.ts"></script>
 	</body>
 </html>
