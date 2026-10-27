@@ -8,6 +8,7 @@ import {
 	solvedCube,
 	validFrontColors,
 } from "./cube";
+import type { Translation } from "./i18n/types";
 import { layoutSheet } from "./layout";
 import { describeError } from "./messages";
 import { type Move, parseSequence } from "./moves";
@@ -20,6 +21,9 @@ export interface AppDeps {
 	savePdf: (bytes: Uint8Array, filename: string) => void;
 	/** Delay between typing and updating the preview; 0 updates synchronously. */
 	debounceMs: number;
+	t: Translation;
+	/** The page's `location.search`, carrying the state from another language page. */
+	search: string;
 }
 
 /** What the sheet is drawn from: the moves and everything that shapes the first and last cubes. */
@@ -30,76 +34,136 @@ interface SheetSetup {
 	finalState: boolean;
 }
 
-const colorName = (color: Color): string =>
-	color.charAt(0).toUpperCase() + color.slice(1);
-
 const notations = (moves: readonly Move[]): string =>
 	moves.map((move) => move.notation).join(" ");
 
-/** The non-default starting position, for the summary ("" when it is the default). */
-function describeStart({ startMoves, orientation }: SheetSetup): string {
-	const parts: string[] = [];
-	if (
-		orientation.top !== DEFAULT_ORIENTATION.top ||
-		orientation.front !== DEFAULT_ORIENTATION.front
-	) {
-		parts.push(
-			`top ${colorName(orientation.top)}, front ${colorName(orientation.front)}`,
-		);
-	}
-	if (startMoves.length > 0) {
-		parts.push(`after ${notations(startMoves)}`);
-	}
-	return parts.length === 0 ? "" : ` · Start: ${parts.join(", ")}`;
+const escapeHtml = (text: string): string =>
+	text
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#39;");
+
+const isDefaultOrientation = ({ top, front }: Orientation): boolean =>
+	top === DEFAULT_ORIENTATION.top && front === DEFAULT_ORIENTATION.front;
+
+/** The state carried across language pages in the query string. */
+interface CarriedState {
+	moves: string;
+	start: string;
+	orientation: Orientation;
+	finalState: boolean;
 }
 
-const plural = (count: number, word: string): string =>
-	`${count} ${word}${count === 1 ? "" : "s"}`;
+function readQuery(search: string): CarriedState {
+	const params = new URLSearchParams(search);
+	const top = params.get("top") as Color | null;
+	const front = params.get("front") as Color | null;
+	const validPair =
+		top !== null &&
+		front !== null &&
+		COLORS.includes(top) &&
+		validFrontColors(top).includes(front);
+	return {
+		moves: params.get("moves") ?? "",
+		start: params.get("start") ?? "",
+		orientation: validPair ? { top, front } : DEFAULT_ORIENTATION,
+		finalState: params.get("final") === "1",
+	};
+}
 
-const TEMPLATE = `
+function toQuery({ moves, start, orientation, finalState }: CarriedState) {
+	const params = new URLSearchParams();
+	if (moves !== "") {
+		params.set("moves", moves);
+	}
+	if (start !== "") {
+		params.set("start", start);
+	}
+	if (!isDefaultOrientation(orientation)) {
+		params.set("top", orientation.top);
+		params.set("front", orientation.front);
+	}
+	if (finalState) {
+		params.set("final", "1");
+	}
+	const query = params.toString().replaceAll("+", "%20");
+	return query === "" ? "" : `?${query}`;
+}
+
+function template(t: Translation): string {
+	const ui = Object.fromEntries(
+		Object.entries(t.ui).map(([key, value]) => [
+			key,
+			typeof value === "string" ? escapeHtml(value) : value,
+		]),
+	) as unknown as Translation["ui"];
+	return `
 <div class="layout">
 	<form class="controls" novalidate>
-		<label for="sequence">Move sequence</label>
+		<label for="sequence">${ui.moveSequenceLabel}</label>
 		<textarea id="sequence" rows="4" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"
 			aria-describedby="sequence-hint sequence-error"></textarea>
-		<p id="sequence-hint" class="hint">Moves U D L R F B M E S, each optionally followed by ' (counter-clockwise) or a repeat of 2 or 3 (L3 = L three times), separated by spaces.</p>
+		<p id="sequence-hint" class="hint">${ui.sequenceHint}</p>
 		<p id="sequence-error" class="error" role="alert" hidden></p>
 		<fieldset class="options">
-			<legend>Options</legend>
-			<label class="check"><input type="checkbox" id="final-state"> Show final state</label>
-			<p class="hint">Adds one last cube after the final step.</p>
+			<legend>${ui.optionsLegend}</legend>
+			<label class="check"><input type="checkbox" id="final-state"> ${ui.showFinalState}</label>
+			<p class="hint">${ui.finalStateHint}</p>
 			<details id="start-details">
-				<summary>Starting position</summary>
+				<summary>${ui.startingPosition}</summary>
 				<div class="start-fields">
-					<label for="orientation-top">Top color</label>
+					<label for="orientation-top">${ui.topColor}</label>
 					<select id="orientation-top"></select>
-					<label for="orientation-front">Front color</label>
+					<label for="orientation-front">${ui.frontColor}</label>
 					<select id="orientation-front"></select>
-					<button id="orientation-reset" type="button" class="secondary">Reset to default orientation</button>
+					<button id="orientation-reset" type="button" class="secondary">${ui.resetOrientation}</button>
 					<p id="options-status" class="status" role="status"></p>
-					<label for="start-sequence">Starting sequence (scramble)</label>
+					<label for="start-sequence">${ui.startingSequenceLabel}</label>
 					<textarea id="start-sequence" rows="2" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"
 						aria-describedby="start-hint start-error"></textarea>
-					<p id="start-hint" class="hint">Applied to the solved cube before step 1. Its moves are not drawn.</p>
+					<p id="start-hint" class="hint">${ui.startingSequenceHint}</p>
 					<p id="start-error" class="error" role="alert" hidden></p>
 				</div>
 			</details>
 		</fieldset>
 		<div class="actions">
-			<button id="example" type="button" class="secondary">Try example</button>
-			<button id="download" type="button" class="primary" aria-describedby="download-reason download-status">Download PDF</button>
+			<button id="example" type="button" class="secondary">${ui.tryExample}</button>
+			<button id="download" type="button" class="primary" aria-describedby="download-reason download-status">${ui.downloadPdf}</button>
 		</div>
 		<p id="download-reason" class="hint"></p>
 		<p id="download-status" class="status" role="status"></p>
 	</form>
-	<section class="sheet-area" aria-label="Sheet preview">
+	<section class="sheet-area" aria-label="${ui.sheetPreview}">
 		<p id="summary" class="summary" role="status"></p>
 		<div id="preview" class="preview"></div>
 	</section>
 </div>`;
+}
 
 export function mountApp(root: HTMLElement, deps: AppDeps): void {
-	root.innerHTML = TEMPLATE;
+	const { t } = deps;
+	const colorName = (color: Color): string => t.ui.colors[color];
+
+	/** The non-default starting position, for the summary ("" when it is the default). */
+	function describeStart({ startMoves, orientation }: SheetSetup): string {
+		const parts: string[] = [];
+		if (!isDefaultOrientation(orientation)) {
+			parts.push(
+				t.ui.startOrientation(
+					colorName(orientation.top),
+					colorName(orientation.front),
+				),
+			);
+		}
+		if (startMoves.length > 0) {
+			parts.push(t.ui.startAfter(notations(startMoves)));
+		}
+		return parts.length === 0 ? "" : t.ui.startSummary(parts);
+	}
+
+	root.innerHTML = template(t);
 	const $ = <T extends HTMLElement>(selector: string) =>
 		root.querySelector(selector) as T;
 	const input = $<HTMLTextAreaElement>("#sequence");
@@ -125,10 +189,40 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 			...colors.map((color) => new Option(colorName(color), color)),
 		);
 	};
+	const carried = readQuery(deps.search);
 	addOptions(topSelect, COLORS);
-	topSelect.value = DEFAULT_ORIENTATION.top;
-	addOptions(frontSelect, validFrontColors(DEFAULT_ORIENTATION.top));
-	frontSelect.value = DEFAULT_ORIENTATION.front;
+	topSelect.value = carried.orientation.top;
+	addOptions(frontSelect, validFrontColors(carried.orientation.top));
+	frontSelect.value = carried.orientation.front;
+	input.value = carried.moves;
+	startInput.value = carried.start;
+	finalCheckbox.checked = carried.finalState;
+	startDetails.open =
+		carried.start !== "" || !isDefaultOrientation(carried.orientation);
+
+	const languageLinks = Array.from(
+		root.ownerDocument.querySelectorAll<HTMLAnchorElement>(
+			"nav.language-selector a[href]",
+		),
+	);
+	for (const link of languageLinks) {
+		link.dataset.baseHref = link.getAttribute("href") ?? "";
+	}
+
+	function carryStateInLinks(): void {
+		const query = toQuery({
+			moves: input.value,
+			start: startInput.value,
+			orientation: {
+				top: topSelect.value as Color,
+				front: frontSelect.value as Color,
+			},
+			finalState: finalCheckbox.checked,
+		});
+		for (const link of languageLinks) {
+			link.setAttribute("href", `${link.dataset.baseHref}${query}`);
+		}
+	}
 
 	let shown: string | null = null;
 	let shownPageCount = 1;
@@ -175,9 +269,13 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 			page.setAttribute("role", "img");
 			page.setAttribute(
 				"aria-label",
-				`Page ${index + 1} of ${pages.length}: ${(layout[index]?.steps ?? [])
-					.map((step) => step.move?.notation ?? "final state")
-					.join(" ")}`,
+				t.ui.pageLabel(
+					index + 1,
+					pages.length,
+					(layout[index]?.steps ?? [])
+						.map((step) => step.move?.notation ?? t.ui.finalStateWord)
+						.join(" "),
+				),
 			);
 			page.innerHTML = svg;
 			preview.append(page);
@@ -204,11 +302,12 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 		const main = parseSequence(input.value);
 		const start = parseSequence(startInput.value);
 		status.textContent = "";
-		showError(errorBox, input, main.ok ? "" : describeError(main.error));
+		carryStateInLinks();
+		showError(errorBox, input, main.ok ? "" : describeError(main.error, t));
 		showError(
 			startError,
 			startInput,
-			start.ok ? "" : `Starting sequence: ${describeError(start.error)}`,
+			start.ok ? "" : t.ui.startingSequenceError(describeError(start.error, t)),
 		);
 		if (main.ok && start.ok) {
 			current = {
@@ -224,10 +323,14 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 			delete preview.dataset.stale;
 			summary.textContent =
 				current.moves.length === 0
-					? "Enter a move sequence to start."
-					: `${plural(current.moves.length, "step")} · ${plural(shownPageCount, "page")}${describeStart(current)}`;
+					? t.ui.enterMoves
+					: t.ui.summary(
+							t.ui.steps(current.moves.length),
+							t.ui.pages(shownPageCount),
+							describeStart(current),
+						);
 			blockReason =
-				current.moves.length === 0 ? "Enter a sequence to download." : "";
+				current.moves.length === 0 ? t.ui.enterSequenceToDownload : "";
 			updateDownload();
 			return;
 		}
@@ -238,11 +341,11 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 		}
 		summary.textContent =
 			current.moves.length === 0
-				? "Fix the sequence to see the preview."
-				: `Preview is out of date. ${plural(current.moves.length, "step")} shown.`;
+				? t.ui.fixSequence
+				: t.ui.previewOutdated(current.moves.length);
 		blockReason = !main.ok
-			? `Fix move ${main.error.position} to download.`
-			: `Fix move ${start.ok ? 0 : start.error.position} of the starting sequence to download.`;
+			? t.ui.fixMove(main.error.position)
+			: t.ui.fixStartMove(start.ok ? 0 : start.error.position);
 		updateDownload();
 	}
 
@@ -268,7 +371,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 			? DEFAULT_ORIENTATION.front
 			: (fronts[0] as Color);
 		frontSelect.value = next;
-		optionsStatus.textContent = `Front color changed to ${colorName(next)}.`;
+		optionsStatus.textContent = t.ui.frontColorChanged(colorName(next));
 	}
 
 	input.addEventListener("input", scheduleRefresh);
@@ -302,19 +405,19 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 		busy = true;
 		downloadButton.disabled = true;
 		downloadButton.setAttribute("aria-busy", "true");
-		downloadButton.textContent = "Generating…";
+		downloadButton.textContent = t.ui.generating;
 		status.textContent = "";
 		try {
 			const bytes = await deps.buildPdf(renderCurrent());
 			const filename = `cubing-steps-${current.moves.length}-moves.pdf`;
 			deps.savePdf(bytes, filename);
-			status.textContent = `PDF saved as ${filename}.`;
+			status.textContent = t.ui.pdfSaved(filename);
 		} catch {
-			status.textContent = "The PDF could not be generated. Try again.";
+			status.textContent = t.ui.pdfFailed;
 		} finally {
 			busy = false;
 			downloadButton.setAttribute("aria-busy", "false");
-			downloadButton.textContent = "Download PDF";
+			downloadButton.textContent = t.ui.downloadPdf;
 			updateDownload();
 		}
 	});

@@ -1,5 +1,6 @@
 import "./styles.css";
 import { mountApp } from "./app";
+import { translationFor } from "./i18n";
 import { buildPdf } from "./pdf";
 
 function savePdf(bytes: Uint8Array, filename: string): void {
@@ -17,5 +18,11 @@ function savePdf(bytes: Uint8Array, filename: string): void {
 
 const root = document.querySelector<HTMLElement>("#app");
 if (root) {
-	mountApp(root, { buildPdf, savePdf, debounceMs: 150 });
+	mountApp(root, {
+		buildPdf,
+		savePdf,
+		debounceMs: 150,
+		t: translationFor(document.documentElement.lang),
+		search: location.search,
+	});
 }

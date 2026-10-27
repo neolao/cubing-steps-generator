@@ -19,7 +19,9 @@ function stepSvg(step: StepPlacement, cube: CubeState): string {
 	const scene = step.move ? buildScene(cube, step.move) : buildFinalScene(cube);
 	return (
 		'<g data-role="step">' +
-		`<text x="${step.labelX}" y="${step.labelY}" font-family="${FONT}" font-weight="bold" font-size="${step.fontSize}" fill="black">${escapeText(step.label)}</text>` +
+		(step.label === null
+			? ""
+			: `<text x="${step.labelX}" y="${step.labelY}" font-family="${FONT}" font-weight="bold" font-size="${step.fontSize}" fill="black">${escapeText(step.label)}</text>`) +
 		`<g transform="translate(${step.cubeX} ${step.cubeY}) scale(${step.scale})">${sceneToSvg(scene, `s${step.index}`)}</g>` +
 		"</g>"
 	);

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>루빅스 큐브 단계 PDF 생성기 – Cubing Steps Generator</title>
+		<meta name="description" content="무료 루빅스 큐브 알고리즘 PDF 생성기예요. F L F U&#39; R U 같은 회전 기호를 입력하면 화살표가 그려진 인쇄용 해법 단계를 만들어 줘요. 브라우저에서 바로 실행됩니다." />
+		<link rel="canonical" href="https://neolao.github.io/cubing-steps-generator/ko/" />
+		<link rel="alternate" hreflang="en" href="https://neolao.github.io/cubing-steps-generator/" />
+		<link rel="alternate" hreflang="fr" href="https://neolao.github.io/cubing-steps-generator/fr/" />
+		<link rel="alternate" hreflang="es" href="https://neolao.github.io/cubing-steps-generator/es/" />
+		<link rel="alternate" hreflang="it" href="https://neolao.github.io/cubing-steps-generator/it/" />
+		<link rel="alternate" hreflang="zh-Hans" href="https://neolao.github.io/cubing-steps-generator/zh/" />
+		<link rel="alternate" hreflang="ja" href="https://neolao.github.io/cubing-steps-generator/ja/" />
+		<link rel="alternate" hreflang="ko" href="https://neolao.github.io/cubing-steps-generator/ko/" />
+		<link rel="alternate" hreflang="x-default" href="https://neolao.github.io/cubing-steps-generator/" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#1f5fd6" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Cubing Steps Generator" />
+		<meta property="og:title" content="루빅스 큐브 단계 PDF 생성기 – Cubing Steps Generator" />
+		<meta property="og:description" content="무료 루빅스 큐브 알고리즘 PDF 생성기예요. F L F U&#39; R U 같은 회전 기호를 입력하면 화살표가 그려진 인쇄용 해법 단계를 만들어 줘요. 브라우저에서 바로 실행됩니다." />
+		<meta property="og:url" content="https://neolao.github.io/cubing-steps-generator/ko/" />
+		<meta property="og:image" content="https://neolao.github.io/cubing-steps-generator/og-image.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="번호가 매겨진 루빅스 큐브 네 단계, 각 큐브에 돌릴 층을 가리키는 화살표가 있음" />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="../favicon-48x48.png" type="image/png" sizes="48x48" />
+		<link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebApplication",
+				"name": "Cubing Steps Generator",
+				"url": "https://neolao.github.io/cubing-steps-generator/ko/",
+				"description": "루빅스 큐브 회전 순서를 화살표가 있는 번호 매긴 해법 단계의 인쇄용 PDF로 바꿔 줘요.",
+				"applicationCategory": "UtilitiesApplication",
+				"operatingSystem": "Any",
+				"browserRequirements": "Requires JavaScript",
+				"inLanguage": "ko",
+				"image": "https://neolao.github.io/cubing-steps-generator/og-image.png",
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<header class="site-title">
+			<h1>루빅스 큐브 단계 PDF: Cubing Steps Generator</h1>
+			<nav class="language-selector" aria-label="언어">
+					<a href="../" lang="en" hreflang="en">English</a>
+					<a href="../fr/" lang="fr" hreflang="fr">Français</a>
+					<a href="../es/" lang="es" hreflang="es">Español</a>
+					<a href="../it/" lang="it" hreflang="it">Italiano</a>
+					<a href="../zh/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+					<a href="../ja/" lang="ja" hreflang="ja">日本語</a>
+					<a href="../ko/" lang="ko" hreflang="ko" aria-current="page">한국어</a>
+			</nav>
+		</header>
+		<main id="app"></main>
+		<section class="about">
+			<h2>사용 방법</h2>
+			<p>Cubing Steps Generator는 루빅스 큐브 회전 순서(알고리즘 또는 전체 해법)를 번호가 매겨진 그림 단계의 인쇄용 PDF로 바꿔 주는 무료 온라인 도구입니다. 튜토리얼, 수업, 다른 스피드큐버와의 해법 공유에 편리해요. 각 단계는 회전 전의 큐브와 돌릴 층을 가리키는 화살표를 보여 주고, 반복 회전에는 빨간색 x2 또는 x3 표시가 붙어요.</p>
+			<h2>회전 기호</h2>
+			<p>면은 U (윗면), D (아랫면), L (왼쪽), R (오른쪽), F (앞면), B (뒷면)로 쓰고, 가운데 층은 M (L과 R 사이, L처럼 회전), E (U와 D 사이, D처럼 회전), S (F와 B 사이, F처럼 회전)로 쓰며, 각각 공백으로 구분해요. 회전은 기본적으로 시계 방향이고, 어포스트로피를 붙이면 반시계 방향 (U&#39;), 2 또는 3을 붙이면 반복 횟수 (L2, L3)예요. 3x3 큐브의 표준 기호입니다. 예시: F L F U&#39; R U F2 L2 U&#39;.</p>
+			<h2>자주 묻는 질문</h2>
+			<h3>PDF는 서버에서 생성되나요?</h3>
+			<p>아니요. 시트는 브라우저에서 만들어지고 아무것도 업로드되지 않으므로 입력한 순서는 비공개로 유지돼요.</p>
+			<h3>순서는 얼마나 길어도 되나요?</h3>
+			<p>길이 제한은 없어요. 한 페이지에 최대 30단계가 들어가고, 더 긴 순서는 새 A4 페이지로 이어져요.</p>
+			<h3>섞인 큐브에서 시작할 수 있나요?</h3>
+			<p>네. 시작 방향을 고르고 시작 순서를 입력한 뒤, 마지막 단계 뒤에 최종 상태 큐브를 추가할 수 있어요.</p>
+		</section>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>

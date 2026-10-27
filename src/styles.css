@@ -266,3 +266,48 @@ select {
 	margin: 0;
 	max-width: 70ch;
 }
+
+.language-selector {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 8px;
+	margin-top: 4px;
+}
+
+.language-selector a {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding: 0 8px;
+	color: var(--accent);
+}
+
+.language-selector a[aria-current="page"] {
+	color: var(--text);
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+.language-selector a:focus-visible {
+	outline: 3px solid var(--focus);
+	outline-offset: 2px;
+}
+
+:lang(zh-Hans) {
+	font-family:
+		system-ui, -apple-system, "PingFang SC", "Microsoft YaHei",
+		"Noto Sans CJK SC", sans-serif;
+}
+
+:lang(ja) {
+	font-family:
+		system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", Meiryo,
+		"Noto Sans CJK JP", sans-serif;
+}
+
+:lang(ko) {
+	font-family:
+		system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic",
+		"Noto Sans CJK KR", sans-serif;
+}

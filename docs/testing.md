@@ -11,13 +11,17 @@ Tests run with Vitest (`npm test`), one file per module in `tests/`.
 | `tests/arrows.test.ts` | Arrow placement table read from the reference sheet, plus a physical check: each arrow points where the layer's stickers move. |
 | `tests/render.test.ts` | Isometric projection, reference sticker shape, state-before-move colours, arrow direction and bounds, `xN` marker and its distance from the arrow, SVG output. |
 | `tests/layout.test.ts` | Grid for 1 to 65 steps: column choice (3, 4 or 5), cube size never above the reference and never growing with more steps, margins, label size floor, no overlap, pagination and numbering. |
-| `tests/sheet.test.ts` | Whole-page SVG: 15 cubes for the reference sequence, labels, unique gradient ids, blank page. |
+| `tests/sheet.test.ts` | Whole-page SVG: 15 cubes for the reference sequence, labels, unique gradient ids, blank page, and no text on the final-state cube. |
 | `tests/pdf.test.ts` | A4 vector PDF, text kept as text, page count. |
-| `tests/messages.test.ts`, `tests/app.test.ts` | Error wording, and the page states: empty, valid, invalid with out-of-date preview, download busy, success and failure. |
+| `tests/messages.test.ts`, `tests/app.test.ts` | Error wording, and the page states: empty, valid, invalid with out-of-date preview, download busy, success and failure; texts coming from the injected translation; the sequence and options read from the URL query and written into the language links; the accessible page label in French and Japanese. |
+| `tests/i18n.test.ts` | Every language: registry paths and `htmlLang`, title and description length, three FAQ entries, plurals, errors quote the faulty move verbatim with the capital letters, page label and final-state word really translated, language lookup with fallback to English. |
+| `tests/pages.test.ts` | Committed language pages and `public/sitemap.xml` equal what `src/pages.ts` generates (snapshot files, regenerate with `npx vitest run -u`); escaping of hostile text. |
+| `tests/seo.test.ts` | Facts read from the committed pages of every language: tags, canonical, hreflang reciprocity, selector, icons, sitemap, robots. |
+| `tests/vite-config.test.ts` | The build has one input per language of the registry and each page exists. |
 
 ## Environment notes
 
-- `tests/pdf.test.ts` and `tests/app.test.ts` use jsdom (`// @vitest-environment jsdom`).
+- `tests/pdf.test.ts`, `tests/app.test.ts`, `tests/pages.test.ts` and `tests/seo.test.ts` use jsdom (`// @vitest-environment jsdom`).
 - jsdom has no text measurement, so the PDF test gives `getBBox` a stub. Real layout is checked by opening the built page in Chrome.
 - `vite.config.ts` aliases `svg2pdf.js` to its ES build for Vitest, because its default entry is a UMD build that expects a global jsPDF.
 

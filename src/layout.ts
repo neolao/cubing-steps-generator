@@ -23,7 +23,8 @@ export interface StepPlacement {
 	index: number;
 	/** The move drawn on the cube, null for the final state. */
 	move: Move | null;
-	label: string;
+	/** The text above the cube, null for the final state (no text, so no font needed). */
+	label: string | null;
 	labelX: number;
 	/** Text baseline. */
 	labelY: number;
@@ -133,7 +134,7 @@ export function layoutSheet(
 				return {
 					index: start + i + 1,
 					move,
-					label: move ? `#${start + i + 1} - ${move.notation}` : "Final state",
+					label: move ? `#${start + i + 1} - ${move.notation}` : null,
 					labelX: cellX,
 					labelY: cellY + fontSize * LABEL_BASELINE,
 					fontSize,

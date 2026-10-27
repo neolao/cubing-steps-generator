@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { en } from "../src/i18n/en";
 import { describeError } from "../src/messages";
 import { parseSequence } from "../src/moves";
 
@@ -12,26 +13,40 @@ function errorFor(text: string) {
 
 describe("describeError", () => {
 	it("names the unknown face and its position", () => {
-		expect(describeError(errorFor("F L X U"))).toBe(
+		expect(describeError(errorFor("F L X U"), en)).toBe(
 			"Move 3 'X' is not a cube face. Use U, D, L, R, F, B, M, E or S.",
 		);
 	});
 
 	it("explains that lowercase and wide moves are not supported", () => {
-		expect(describeError(errorFor("F r"))).toBe(
+		expect(describeError(errorFor("F r"), en)).toBe(
 			"Move 2 'r' is not supported. Use the capital letters U, D, L, R, F, B, M, E or S.",
 		);
 	});
 
 	it("explains how to write a bad suffix", () => {
-		expect(describeError(errorFor("U F1"))).toBe(
+		expect(describeError(errorFor("U F1"), en)).toBe(
 			"Move 2 'F1' is not valid. Write it F, F', F2 or F3 (a repeat of 2 or 3).",
 		);
 	});
 
 	it("points at a curly apostrophe", () => {
-		expect(describeError(errorFor("R U’"))).toBe(
+		expect(describeError(errorFor("R U’"), en)).toBe(
 			"Move 2 'U’' is not valid. Write it U, U', U2 or U3 (a repeat of 2 or 3).",
 		);
+	});
+
+	it("takes its wording from the given translation, with the face and token verbatim", () => {
+		const t = {
+			...en,
+			errors: {
+				badSuffix: (p: number, tok: string, f: string) => `S|${p}|${tok}|${f}`,
+				lowercase: (p: number, tok: string) => `L|${p}|${tok}`,
+				notAFace: (p: number, tok: string) => `N|${p}|${tok}`,
+			},
+		};
+		expect(describeError(errorFor("U F1"), t)).toBe("S|2|F1|F");
+		expect(describeError(errorFor("F r"), t)).toBe("L|2|r");
+		expect(describeError(errorFor("F L X U"), t)).toBe("N|3|X");
 	});
 });

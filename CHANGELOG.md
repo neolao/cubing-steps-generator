@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Users can now use the site in French, Spanish, Italian, Chinese, Japanese and Korean, each on its own address (`/fr/`, `/es/`, `/it/`, `/zh/`, `/ja/`, `/ko/`) with a language selector at the top of every page. All texts, error messages and search engine descriptions are translated, the move letters stay the same, and switching language keeps what was already typed.
+
+### Changed
+
+- The final-state cube no longer carries a text label on the sheet and in the PDF, so the PDF is identical in every language.
+
 ## [1.3.0] - 2026-10-27
 
 ### Added

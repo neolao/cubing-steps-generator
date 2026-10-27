@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hans">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>魔方步骤转PDF – 魔方步骤生成器</title>
+		<meta name="description" content="免费的魔方公式转PDF工具:输入 F L F U&#39; R U 等转动公式,即可生成带箭头、可打印的图解还原步骤,完全在浏览器中运行。" />
+		<link rel="canonical" href="https://neolao.github.io/cubing-steps-generator/zh/" />
+		<link rel="alternate" hreflang="en" href="https://neolao.github.io/cubing-steps-generator/" />
+		<link rel="alternate" hreflang="fr" href="https://neolao.github.io/cubing-steps-generator/fr/" />
+		<link rel="alternate" hreflang="es" href="https://neolao.github.io/cubing-steps-generator/es/" />
+		<link rel="alternate" hreflang="it" href="https://neolao.github.io/cubing-steps-generator/it/" />
+		<link rel="alternate" hreflang="zh-Hans" href="https://neolao.github.io/cubing-steps-generator/zh/" />
+		<link rel="alternate" hreflang="ja" href="https://neolao.github.io/cubing-steps-generator/ja/" />
+		<link rel="alternate" hreflang="ko" href="https://neolao.github.io/cubing-steps-generator/ko/" />
+		<link rel="alternate" hreflang="x-default" href="https://neolao.github.io/cubing-steps-generator/" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#1f5fd6" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Cubing Steps Generator" />
+		<meta property="og:title" content="魔方步骤转PDF – 魔方步骤生成器" />
+		<meta property="og:description" content="免费的魔方公式转PDF工具:输入 F L F U&#39; R U 等转动公式,即可生成带箭头、可打印的图解还原步骤,完全在浏览器中运行。" />
+		<meta property="og:url" content="https://neolao.github.io/cubing-steps-generator/zh/" />
+		<meta property="og:image" content="https://neolao.github.io/cubing-steps-generator/og-image.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="四个带编号的魔方步骤,每个魔方图上都用箭头标出要转动的层" />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="../favicon-48x48.png" type="image/png" sizes="48x48" />
+		<link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebApplication",
+				"name": "Cubing Steps Generator",
+				"url": "https://neolao.github.io/cubing-steps-generator/zh/",
+				"description": "把魔方转动公式变成可打印的PDF,包含带编号和箭头的还原步骤图。",
+				"applicationCategory": "UtilitiesApplication",
+				"operatingSystem": "Any",
+				"browserRequirements": "Requires JavaScript",
+				"inLanguage": "zh-Hans",
+				"image": "https://neolao.github.io/cubing-steps-generator/og-image.png",
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<header class="site-title">
+			<h1>魔方步骤转PDF:魔方步骤生成器</h1>
+			<nav class="language-selector" aria-label="语言">
+					<a href="../" lang="en" hreflang="en">English</a>
+					<a href="../fr/" lang="fr" hreflang="fr">Français</a>
+					<a href="../es/" lang="es" hreflang="es">Español</a>
+					<a href="../it/" lang="it" hreflang="it">Italiano</a>
+					<a href="../zh/" lang="zh-Hans" hreflang="zh-Hans" aria-current="page">简体中文</a>
+					<a href="../ja/" lang="ja" hreflang="ja">日本語</a>
+					<a href="../ko/" lang="ko" hreflang="ko">한국어</a>
+			</nav>
+		</header>
+		<main id="app"></main>
+		<section class="about">
+			<h2>使用方法</h2>
+			<p>魔方步骤生成器是一个免费的在线工具,可以把魔方的转动公式(一个公式或完整的还原过程)变成可打印的PDF,里面是带编号的图解步骤,适合用来做教程、教学,或与其他魔友分享还原过程。每一步都显示转动之前的魔方,并用箭头标出要转动的层。重复转动会带有红色的 x2 或 x3 标记。</p>
+			<h2>转动符号</h2>
+			<p>用 U(上)、D(下)、L(左)、R(右)、F(前)、B(后)表示各个面,也可以用中层 M(中间层,位于 L 与 R 之间,转动方向同 L)、E(赤道层,位于 U 与 D 之间,转动方向同 D)、S(侧层,位于 F 与 B 之间,转动方向同 F),各步之间用空格分隔。默认顺时针转动;加撇号表示逆时针(U&#39;),加 2 或 3 表示重复转动(L2、L3)。这是标准的三阶魔方符号。示例:F L F U&#39; R U F2 L2 U&#39;。</p>
+			<h2>常见问题</h2>
+			<h3>PDF 是在服务器上生成的吗?</h3>
+			<p>不是。页面在你的浏览器中生成,不会上传任何内容,所以你的公式不会外泄。</p>
+			<h3>公式最多可以有多长?</h3>
+			<p>没有长度限制。每页最多放 30 步,更长的公式会接着排到新的 A4 页面上。</p>
+			<h3>可以从打乱的魔方开始吗?</h3>
+			<p>可以。你可以选择起始朝向、给出起始公式,还可以在最后一步之后加上最终状态的魔方图。</p>
+		</section>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>

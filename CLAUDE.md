@@ -17,11 +17,13 @@ English — all documentation, backlog items, code comments, and other generated
 ## Architecture
 
 ```
-index.html            # Vite entry point
+index.html            # English page, GENERATED from src/pages.ts (also fr/ es/ it/ zh/ ja/ ko/index.html and public/sitemap.xml): edit the dictionaries, then `npx vitest run -u`
 src/
   main.ts             # browser entry: mounts the app, saves the PDF
   app.ts              # page UI: field, validation, preview, download
-  messages.ts         # user-facing error texts
+  messages.ts         # picks the translated sentence of a move error
+  i18n/               # typed dictionary per language (en fr es it zh ja ko) and the language registry
+  pages.ts            # build-time: generates each language's HTML page and the sitemap
   moves.ts            # strict move sequence parsing
   cube.ts             # facelet cube model, applies the 36 moves
   arrows.ts           # where each move's arrow is drawn
@@ -65,7 +67,8 @@ Agents active for `/vibe:review` on this project:
 
 | Agent | Active | Reason |
 |---|---|---|
-| `vibe:review-tests`, `vibe:review-naming`, `vibe:review-security`, `vibe:review-dependencies`, `vibe:review-robustness`, `vibe:review-hygiene`, `vibe:review-antipatterns`, `vibe:review-simplicity`, `vibe:review-overengineering`, `vibe:review-architecture` | ✅ | always active |
+| `vibe:review-tests`, `vibe:review-naming`, `vibe:review-security`, `vibe:review-dependencies`, `vibe:review-robustness`, `vibe:review-hygiene`, `vibe:review-antipatterns`, `vibe:review-simplicity`, `vibe:review-overengineering`, `vibe:review-architecture`, `vibe:review-correctness`, `vibe:review-comments`, `vibe:review-signatures`, `vibe:review-coordination` | ✅ | always active |
+| `vibe:review-docs` | ✅ | Markdown documentation beyond the README (`docs/`, `.vibe/`) |
 | `vibe:review-solid` | ❌ | functional, modular scripting style |
 | `vibe:review-performance` | ❌ | static client-side page, no server or render loop |
 | `vibe:review-web-security` | ❌ | no HTTP endpoints exposed (static files only) |

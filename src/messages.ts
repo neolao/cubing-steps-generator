@@ -1,18 +1,16 @@
+import type { Translation } from "./i18n/types";
 import type { SequenceError } from "./moves";
 
 /** User-facing text for a rejected move. */
-export function describeError({
-	kind,
-	token,
-	position,
-}: SequenceError): string {
-	const where = `Move ${position} '${token}'`;
+export function describeError(
+	{ kind, token, position }: SequenceError,
+	t: Translation,
+): string {
 	if (kind === "bad-suffix") {
-		const face = token.charAt(0);
-		return `${where} is not valid. Write it ${face}, ${face}', ${face}2 or ${face}3 (a repeat of 2 or 3).`;
+		return t.errors.badSuffix(position, token, token.charAt(0));
 	}
 	if (/^[a-z]/.test(token)) {
-		return `${where} is not supported. Use the capital letters U, D, L, R, F, B, M, E or S.`;
+		return t.errors.lowercase(position, token);
 	}
-	return `${where} is not a cube face. Use U, D, L, R, F, B, M, E or S.`;
+	return t.errors.notAFace(position, token);
 }

@@ -1,15 +1,21 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { type AppDeps, EXAMPLE_SEQUENCE, mountApp } from "../src/app";
+import { en } from "../src/i18n/en";
+import { fr } from "../src/i18n/fr";
+import { ja } from "../src/i18n/ja";
+import type { Translation } from "../src/i18n/types";
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-function setup(overrides: Partial<AppDeps> = {}) {
-	document.body.innerHTML = '<main id="app"></main>';
+function setup(overrides: Partial<AppDeps> = {}, nav = "") {
+	document.body.innerHTML = `${nav}<main id="app"></main>`;
 	const deps: AppDeps = {
 		buildPdf: vi.fn(async () => new Uint8Array([37, 80, 68, 70])),
 		savePdf: vi.fn(),
 		debounceMs: 0,
+		t: en,
+		search: "",
 		...overrides,
 	};
 	mountApp(document.querySelector("#app") as HTMLElement, deps);
@@ -398,7 +404,8 @@ describe("final state", () => {
 		const { q, type } = setup();
 		type("F L");
 		(q("#final-state") as HTMLInputElement).click();
-		expect(q("#preview").textContent).toContain("Final state");
+		expect(q("#preview").textContent).not.toContain("Final state");
+		expect(q("#preview").querySelectorAll("text")).toHaveLength(2);
 		expect(q("#summary").textContent).toBe("2 steps · 1 page");
 		expect(q("#preview .page").getAttribute("aria-label")).toBe(
 			"Page 1 of 1: F L final state",
@@ -428,9 +435,188 @@ describe("final state", () => {
 		await flush();
 		const pages = (deps.buildPdf as ReturnType<typeof vi.fn>).mock
 			.calls[0]?.[0] as string[];
-		expect(pages[0]).toContain(">Final state</text>");
+		expect(pages[0]).not.toContain("Final state");
 		expect((deps.savePdf as ReturnType<typeof vi.fn>).mock.calls[0]?.[1]).toBe(
 			"cubing-steps-2-moves.pdf",
 		);
+	});
+});
+
+const NAV =
+	'<nav class="language-selector"><a href="/">English</a><a href="/fr/">Français</a></nav>';
+const hrefs = () =>
+	Array.from(document.querySelectorAll("nav.language-selector a")).map((a) =>
+		a.getAttribute("href"),
+	);
+
+const fake: Translation = {
+	...en,
+	ui: {
+		...en.ui,
+		moveSequenceLabel: "FAKE label",
+		tryExample: 'Say "hi" it\'s <b>',
+		sheetPreview: "Sheet \"x\" 'y'",
+		steps: (n) => `${n} FAKESTEP`,
+		pages: (n) => `${n} FAKEPAGE`,
+		enterMoves: "FAKE enter",
+		fixMove: (p) => `FAKE fix ${p}`,
+		colors: { ...en.ui.colors, white: "Blanc" },
+	},
+	errors: {
+		badSuffix: (p, tok, f) => `FAKE suffix ${p} ${tok} ${f}`,
+		lowercase: (p, tok) => `FAKE lower ${p} ${tok}`,
+		notAFace: (p, tok) => `FAKE face ${p} ${tok}`,
+	},
+};
+
+describe("translation", () => {
+	it("renders every text from the injected translation", () => {
+		const { q, type } = setup({ t: fake });
+		expect(q('label[for="sequence"]').textContent).toBe("FAKE label");
+		expect(q("#summary").textContent).toBe("FAKE enter");
+		expect(q('#orientation-top option[value="white"]').textContent).toBe(
+			"Blanc",
+		);
+		type("F L");
+		expect(q("#summary").textContent).toBe("2 FAKESTEP · 1 FAKEPAGE");
+		type("F X");
+		expect(q("#sequence-error").textContent).toBe("FAKE face 2 X");
+		expect(q("#download-reason").textContent).toBe("FAKE fix 2");
+	});
+
+	it("keeps quotes and angle brackets in texts from breaking the markup", () => {
+		const { q } = setup({ t: fake });
+		expect(q("#example").textContent).toBe('Say "hi" it\'s <b>');
+		expect(q("#example").querySelector("b")).toBeNull();
+		expect(q(".sheet-area").getAttribute("aria-label")).toBe("Sheet \"x\" 'y'");
+	});
+
+	it("shows the translated error of an invalid starting sequence", () => {
+		const { q } = setup({ t: fake, search: "?start=F%20X" });
+		expect(q("#start-error").textContent).toBe(
+			"Starting sequence: FAKE face 2 X",
+		);
+	});
+});
+
+describe("state carried by the query", () => {
+	it("restores the fields from the query", () => {
+		const { q, input } = setup({
+			search: "?moves=F%20L%20U%27&start=R%20U&top=blue&front=white&final=1",
+		});
+		expect(input.value).toBe("F L U'");
+		expect((q("#start-sequence") as HTMLTextAreaElement).value).toBe("R U");
+		expect((q("#orientation-top") as HTMLSelectElement).value).toBe("blue");
+		expect((q("#orientation-front") as HTMLSelectElement).value).toBe("white");
+		expect((q("#final-state") as HTMLInputElement).checked).toBe(true);
+		expect(q("#summary").textContent).toBe(
+			"3 steps · 1 page · Start: top Blue, front White, after R U",
+		);
+	});
+
+	it("shows the error of an invalid sequence given in the query", () => {
+		const { q } = setup({ search: "?moves=F%20X" });
+		expect(q("#sequence-error").textContent).toBe(
+			"Move 2 'X' is not a cube face. Use U, D, L, R, F, B, M, E or S.",
+		);
+		expect((q("#download") as HTMLButtonElement).disabled).toBe(true);
+	});
+
+	it("falls back to the default orientation for an invalid pair", () => {
+		const { q } = setup({ search: "?top=white&front=yellow" });
+		expect((q("#orientation-top") as HTMLSelectElement).value).toBe("yellow");
+		expect((q("#orientation-front") as HTMLSelectElement).value).toBe("green");
+	});
+
+	it("ignores unknown keys, unknown colors and an empty query", () => {
+		const a = setup({ search: "?foo=bar&top=pink&front=green&final=0" });
+		expect(a.input.value).toBe("");
+		expect((a.q("#orientation-top") as HTMLSelectElement).value).toBe("yellow");
+		expect((a.q("#final-state") as HTMLInputElement).checked).toBe(false);
+		const b = setup({ search: "" });
+		expect(b.q("#summary").textContent).toBe("Enter a move sequence to start.");
+	});
+
+	it("writes the non-default state into the language links", () => {
+		const { q, type } = setup({}, NAV);
+		expect(hrefs()).toEqual(["/", "/fr/"]);
+		type("F U'  R");
+		expect(hrefs()).toEqual([
+			"/?moves=F%20U%27%20%20R",
+			"/fr/?moves=F%20U%27%20%20R",
+		]);
+		(q("#final-state") as HTMLInputElement).click();
+		(q("#start-sequence") as HTMLTextAreaElement).value = "L";
+		q("#start-sequence").dispatchEvent(new Event("input", { bubbles: true }));
+		const top = q("#orientation-top") as HTMLSelectElement;
+		top.value = "blue";
+		top.dispatchEvent(new Event("change", { bubbles: true }));
+		expect(hrefs()[1]).toBe(
+			"/fr/?moves=F%20U%27%20%20R&start=L&top=blue&front=yellow&final=1",
+		);
+		type("");
+		(q("#final-state") as HTMLInputElement).click();
+		(q("#start-sequence") as HTMLTextAreaElement).value = "";
+		q("#orientation-reset").click();
+		expect(hrefs()).toEqual(["/", "/fr/"]);
+	});
+
+	it("restores the query state into the links at mount", () => {
+		setup({ search: "?moves=R%20U" }, NAV);
+		expect(hrefs()).toEqual(["/?moves=R%20U", "/fr/?moves=R%20U"]);
+	});
+
+	it("works when the page has no language links", () => {
+		expect(() => setup({ search: "?moves=R" })).not.toThrow();
+	});
+});
+
+describe("page accessible name", () => {
+	const labels = (q: (s: string) => HTMLElement) =>
+		[...q("#preview").querySelectorAll(".page")].map((p) =>
+			p.getAttribute("aria-label"),
+		);
+
+	it("is written in French with the French final state word", () => {
+		const { q, type } = setup({ t: fr });
+		type("F L");
+		(q("#final-state") as HTMLInputElement).click();
+		expect(labels(q)).toEqual(["Page 1 sur 1 : F L état final"]);
+	});
+
+	it("is written in Japanese with the Japanese final state word", () => {
+		const { q, type } = setup({ t: ja });
+		type("F L");
+		(q("#final-state") as HTMLInputElement).click();
+		expect(labels(q)).toEqual(["1 ページ中 1 ページ目: F L 最終状態"]);
+	});
+
+	it("numbers each page of a multi-page sequence in the page language", () => {
+		const { q, type } = setup({ t: fr });
+		type(Array.from({ length: 31 }, () => "R").join(" "));
+		const result = labels(q);
+		expect(result).toHaveLength(2);
+		expect(result[0]).toMatch(/^Page 1 sur 2 : R /);
+		expect(result[1]).toBe("Page 2 sur 2 : R");
+	});
+
+	it("uses the translation's pageLabel and finalStateWord", () => {
+		const t: Translation = {
+			...en,
+			ui: {
+				...en.ui,
+				pageLabel: (page, total, steps) => `P${page}/${total}|${steps}`,
+				finalStateWord: "END",
+			},
+		};
+		const { q, type } = setup({ t });
+		type("F L");
+		(q("#final-state") as HTMLInputElement).click();
+		expect(labels(q)).toEqual(["P1/1|F L END"]);
+	});
+
+	it("labels the single blank page of an empty sequence without failing", () => {
+		const { q } = setup({ t: fr });
+		expect(labels(q)).toEqual(["Page 1 sur 1 : "]);
 	});
 });

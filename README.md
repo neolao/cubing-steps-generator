@@ -13,6 +13,7 @@ Everything runs in the browser (no upload, no account) and the site is hosted on
 - Longer sequences use 4 or 5 columns to keep the cubes large; sequences over 30 steps continue on new pages.
 - Optionally choose the starting orientation, start from a scrambled cube, and add a final-state cube.
 - Mistakes are explained next to the field, with the move number to fix.
+- Available in English, French, Spanish, Italian, Chinese, Japanese and Korean, with a language selector at the top of every page; what you typed is kept when you switch language.
 <!-- vibe:end:features -->
 
 <!-- vibe:begin:install -->
@@ -42,6 +43,8 @@ By default the cube starts solved, with yellow on top, green in front and orange
 
 - tick "Show final state" to add one last cube after the final step;
 - open "Starting position" to choose which colors are on top and in front, and to enter a starting sequence (a scramble applied before step 1, not drawn as steps).
+
+The language pages are `/` (English), `/fr/`, `/es/`, `/it/`, `/zh/`, `/ja/` and `/ko/`. The move letters stay the same in every language.
 
 Developer commands:
 

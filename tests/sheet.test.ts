@@ -95,7 +95,9 @@ describe("renderSheet options", () => {
 	it("draws the cube after the last move, labelled and without arrow", () => {
 		const [page] = renderSheet(moves("R"), { finalState: true }) as [string];
 		expect(count(page, 'data-role="step"')).toBe(2);
-		expect(page).toContain(">Final state</text>");
+		expect(page).not.toContain("Final state");
+		// only the "#1 - R" label: the final cube carries no text
+		expect(count(page, "<text")).toBe(1);
 		expect(count(page, "linearGradient id=")).toBe(1);
 		// final cube = solved cube after R: the front face now has one orange... column
 		expect(count(page, ORANGE)).toBeGreaterThan(
@@ -116,7 +118,7 @@ describe("renderSheet options", () => {
 		const long = Array.from({ length: 30 }, () => "R").join(" ");
 		const pages = renderSheet(moves(long), { finalState: true });
 		expect(pages).toHaveLength(2);
-		expect(pages[1]).toContain(">Final state</text>");
+		expect(count(pages[1] as string, "<text")).toBe(0);
 		expect(count(pages[1] as string, 'data-role="step"')).toBe(1);
 	});
 });

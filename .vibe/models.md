@@ -3,10 +3,21 @@
 ## Move
 | Field | Type | Notes |
 |---|---|---|
-| face | `U` `D` `L` `R` `F` `B` | Face turned |
+| face | `U` `D` `L` `R` `F` `B` `M` `E` `S` | Layer turned (a face, or a middle layer; typed `Layer` in the code) |
 | turns | number | -1 counter-clockwise, 1 clockwise, 2 or 3 clockwise repeated that many times |
 | notation | string | As typed, e.g. `U'` |
 Defined in: `src/moves.ts`
+
+## Translation
+| Field | Type | Notes |
+|---|---|---|
+| htmlLang | string | Language tag of the page, e.g. `zh-Hans` |
+| nativeName | string | Name shown in the language selector |
+| ui | texts and functions | Every text of the page; parametrised texts and plurals are functions returning a whole sentence |
+| errors | functions | The three move error sentences; the faulty move is quoted verbatim |
+| page | texts | Title, description, h1, notation text and three FAQ entries of the language page |
+One per language, a missing key fails the type check. Registered in `LANGUAGES` with the page path (`""`, `fr/`, `es/`, `it/`, `zh/`, `ja/`, `ko/`).
+Defined in: `src/i18n/types.ts`, `src/i18n/index.ts`
 
 ## Orientation
 | Field | Type | Notes |

@@ -246,7 +246,8 @@ describe("layoutSheet with a final state", () => {
 		const steps = layoutSheet(moves(15), true)[0]?.steps as StepPlacement[];
 		expect(steps).toHaveLength(16);
 		const final = steps[15] as StepPlacement;
-		expect(final.label).toBe("Final state");
+		expect(final.label).toBeNull();
+		expect((steps[14] as StepPlacement).label).toBe("#15 - U");
 		expect(final.move).toBeNull();
 		expect(final.index).toBe(16);
 		expect(steps.slice(0, 15).every((s) => s.move !== null)).toBe(true);
@@ -260,7 +261,7 @@ describe("layoutSheet with a final state", () => {
 		const pages = layoutSheet(moves(30), true);
 		expect(pages).toHaveLength(2);
 		expect(pages[0]?.steps).toHaveLength(30);
-		expect(pages[1]?.steps.map((s) => s.label)).toEqual(["Final state"]);
+		expect(pages[1]?.steps.map((s) => s.label)).toEqual([null]);
 	});
 
 	it("keeps the final state on the same page after 29 steps", () => {

@@ -26,11 +26,13 @@ flowchart LR
 | `src/arrows.ts` | Where the arrow of each move goes. U, D, L, R use the front face (M its middle column, E its middle row), F and B use the right face (S its middle column). Hidden-face moves are drawn on the visible edge of their layer. |
 | `src/render.ts` | Isometric projection and drawing of one cube (27 visible stickers, arrow with gradient, `xN` marker for repeated turns, placed one and a half cubie edges away from the arrow). Works in cubie-edge units, so scale is applied by the caller. |
 | `src/layout.ts` | A4 page at 300 dpi (2481 x 3508), 120 px margins, 3 to 5 columns, at most 30 cells per page (steps, plus the optional final-state cell). The column count that gives the largest cubes is chosen; cube and label sizes adapt to the grid. |
-| `src/sheet.ts` | Combines state, layout and drawing into one SVG document per page. Each step shows the cube before its move; it can start from a scrambled cube and end with a final-state cube without arrow. |
+| `src/sheet.ts` | Combines state, layout and drawing into one SVG document per page. Each step shows the cube before its move; it can start from a scrambled cube and end with a final-state cube without arrow and without any text label, so the PDF needs no font beyond the digits and notation. |
 | `src/pdf.ts` | Draws each SVG page on an A4 page with jsPDF and svg2pdf.js (vector, text kept as text). |
-| `src/app.ts` | The page: field, options (final state, orientation, starting sequence), validation messages per field, live preview, download button and its states. Dependencies are injected so tests can replace the PDF and save steps. |
-| `src/messages.ts` | Wording of the parse errors. |
-| `src/main.ts` | Browser entry point: mounts the app and saves the PDF through a temporary link. |
+| `src/app.ts` | The page: field, options (final state, orientation, starting sequence), validation messages per field, live preview, download button and its states. All its texts come from the injected translation. It reads the sequence and options from the URL query and writes them into the language-selector links, so switching language keeps what was typed. Dependencies are injected so tests can replace the PDF and save steps. |
+| `src/messages.ts` | Branching of the parse errors; the sentences come from the translation. |
+| `src/i18n/` | One typed dictionary per language (`en`, `fr`, `es`, `it`, `zh`, `ja`, `ko`) against the `Translation` interface, so a missing key fails `tsc`. `index.ts` is the single language registry (paths, order) and `translationFor` picks a dictionary from `<html lang>`. Move letters and notation are never translated. |
+| `src/pages.ts` | Build-time generation, not loaded by the browser: `renderPage(lang)` and `renderSitemap()` produce each language's HTML (tags, hreflang, selector, FAQ) and the sitemap from the dictionaries. |
+| `src/main.ts` | Browser entry point: picks the dictionary from the page language, mounts the app and saves the PDF through a temporary link. |
 
 ## Sizing rules
 
@@ -40,6 +42,10 @@ flowchart LR
 - Labels never go under 34 px (8 pt printed).
 - From 31 steps, a new page starts after every 30 steps, with the same cube size on every page.
 
+## Languages
+
+Seven pages are built, one per language: `index.html` (English), then `fr/`, `es/`, `it/`, `zh/`, `ja/` and `ko/`. They are generated from the dictionaries by `src/pages.ts` and committed; `tests/pages.test.ts` fails when a committed page drifts from its source. After editing a dictionary or the generator, run `npx vitest run -u` and commit the regenerated files (decision 002). `vite.config.ts` builds one input per registry language. Each page has its own title, description, canonical address, hreflang links to the six others plus `x-default`, and a language selector made of plain links.
+
 ## Deployment
 
-`.github/workflows/deploy.yml` runs lint, tests and build on every push to `main`, then publishes `dist/` to GitHub Pages. The Vite `base` is `./`, so the site works under a repository sub-path.
+`.github/workflows/deploy.yml` runs lint, tests and build on every push to `main`, then publishes `dist/` to GitHub Pages. The Vite `base` is `./`, so the site works under a repository sub-path; the nested language pages reference `../assets/`.

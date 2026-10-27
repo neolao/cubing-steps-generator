@@ -35,5 +35,9 @@ Optional moves applied to the solved cube, in the chosen orientation, before ste
 _Sources: `src/app.ts`_
 
 ## Final state
-An extra cube after the last step, labelled "Final state", with no arrow and no number; it is not counted as a step.
+An extra cube after the last step, with no arrow, no number and no text label; it is not counted as a step.
 _Sources: `src/layout.ts`, `src/sheet.ts`_
+
+## Language page
+The version of the site in one language (English at the root, then French, Spanish, Italian, Chinese, Japanese, Korean), with its own address, texts and search engine tags. Move letters are the same in every language, and switching language keeps what was typed.
+_Sources: `src/i18n/index.ts`, `src/pages.ts`_
