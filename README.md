@@ -32,7 +32,7 @@ Check that everything works with `npm test`.
 2. Check the preview of the A4 sheet.
 3. Press "Download PDF".
 
-Moves use standard notation, separated by spaces or line breaks: a face letter (`U D L R F B`, capitals only), optionally followed by `'` (counter-clockwise) or a repeat count of `2` or `3` (`L3` turns the left face clockwise three times, shown with a red x3), for example `F L F U' L2`.
+Moves use standard notation, separated by spaces or line breaks: a face letter (`U D L R F B`, capitals only) or `M` (the vertical middle layer between the left and right faces, turning like `L`), optionally followed by `'` (counter-clockwise) or a repeat count of `2` or `3` (`L3` turns the left face clockwise three times, shown with a red x3), for example `F L F U' L2`.
 
 By default the cube starts solved, with yellow on top, green in front and orange on the right. Under "Options" you can:
 

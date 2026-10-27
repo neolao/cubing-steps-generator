@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-27
+
 ### Added
 
 - Users can now write the middle layer move `M` (the vertical slice between the left and right faces, turning like the left face), with `M'`, `M2` and `M3`; its arrow runs down the middle column of the cube.
@@ -38,6 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Repeated moves are now limited to `X2` and `X3`: `X4` is a full turn and changes nothing, so larger counts are refused with an explanation next to the field.
 
-[Unreleased]: https://github.com/neolao/cubing-steps-generator/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/neolao/cubing-steps-generator/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/neolao/cubing-steps-generator/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/neolao/cubing-steps-generator/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/neolao/cubing-steps-generator/releases/tag/v1.1.0
