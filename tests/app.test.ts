@@ -36,6 +36,11 @@ describe("empty state", () => {
 		expect(q("#summary").textContent).toBe("Enter a move sequence to start.");
 	});
 
+	it("tells which moves can be typed, including the middle layers", () => {
+		const { q } = setup();
+		expect(q("#sequence-hint").textContent).toContain("U D L R F B M E S");
+	});
+
 	it("turns off autocorrect and capitalization for the notation", () => {
 		const { input } = setup();
 		expect(input.getAttribute("autocapitalize")).toBe("off");
