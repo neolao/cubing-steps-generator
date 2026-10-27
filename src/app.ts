@@ -57,7 +57,6 @@ const plural = (count: number, word: string): string =>
 	`${count} ${word}${count === 1 ? "" : "s"}`;
 
 const TEMPLATE = `
-<h1>Cubing steps generator</h1>
 <div class="layout">
 	<form class="controls" novalidate>
 		<label for="sequence">Move sequence</label>

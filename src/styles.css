@@ -48,9 +48,15 @@ body {
 	padding: 16px;
 }
 
+.site-title {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 16px 16px 0;
+}
+
 h1 {
 	font-size: 1.4rem;
-	margin: 0 0 16px;
+	margin: 0;
 }
 
 .layout {

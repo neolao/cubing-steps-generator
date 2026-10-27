@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Rubik's Cube Steps to PDF – Cubing Steps Generator</title>
-		<meta name="description" content="Turn a Rubik's Cube move sequence into a printable PDF of numbered solving steps with arrows. Free, runs in your browser." />
+		<meta name="description" content="Free Rubik's Cube algorithm to PDF generator: type moves like F L F U' R U and get printable, illustrated solving steps with arrows. Runs in your browser." />
 		<link rel="canonical" href="https://neolao.github.io/cubing-steps-generator/" />
 		<meta name="robots" content="index, follow" />
 		<meta name="theme-color" content="#1f5fd6" />
@@ -12,7 +12,7 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="Cubing Steps Generator" />
 		<meta property="og:title" content="Rubik's Cube Steps to PDF – Cubing Steps Generator" />
-		<meta property="og:description" content="Turn a Rubik's Cube move sequence into a printable PDF of numbered solving steps with arrows. Free, runs in your browser." />
+		<meta property="og:description" content="Free Rubik's Cube algorithm to PDF generator: type moves like F L F U' R U and get printable, illustrated solving steps with arrows. Runs in your browser." />
 		<meta property="og:url" content="https://neolao.github.io/cubing-steps-generator/" />
 		<meta property="og:image" content="https://neolao.github.io/cubing-steps-generator/og-image.png" />
 		<meta property="og:image:width" content="1200" />
@@ -41,12 +41,17 @@
 		</script>
 	</head>
 	<body>
+		<header class="site-title">
+			<h1>Rubik's Cube steps to PDF: Cubing Steps Generator</h1>
+		</header>
 		<main id="app"></main>
 		<section class="about">
 			<h2>How it works</h2>
 			<p>
-				Cubing Steps Generator turns a Rubik's Cube move sequence into a printable
-				PDF of numbered solving steps. Each step shows the cube before the move,
+				Cubing Steps Generator is a free online tool that turns a Rubik's Cube
+				move sequence (an algorithm or a full solution) into a printable PDF of
+				numbered, illustrated steps, handy for tutorials, teaching or sharing a
+				solve with other speedcubers. Each step shows the cube before the move,
 				with an arrow on the layer to turn. Repeated turns carry a red x2 or x3
 				marker.
 			</p>
@@ -57,7 +62,7 @@
 				E (equator, between U and D, turning like D) and S (standing, between F
 				and B, turning like F), separated by spaces. A turn is clockwise by
 				default; add an apostrophe for counter-clockwise (U'), or a 2 or 3 to
-				repeat it (L2, L3). Example: F L F U' R U F2 L2 U'.
+				repeat it (L2, L3). This is the standard 3x3 cube notation. Example: F L F U' R U F2 L2 U'.
 			</p>
 			<h2>Questions</h2>
 			<h3>Is the PDF generated on a server?</h3>

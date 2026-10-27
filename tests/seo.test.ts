@@ -74,7 +74,7 @@ describe("search engine tags", () => {
 
 describe("indexable text", () => {
 	it("has exactly one main heading and several section headings", () => {
-		expect(page.querySelectorAll("h1")).toHaveLength(0); // the h1 is rendered by the app
+		expect(page.querySelectorAll("h1")).toHaveLength(1);
 		expect(page.querySelectorAll("section.about h2").length).toBeGreaterThan(1);
 	});
 

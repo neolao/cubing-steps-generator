@@ -1,6 +1,10 @@
-# cubing-steps-generator
+# Cubing Steps Generator
 
-A static web page that turns a text move sequence into a printable PDF of Rubik's Cube solving steps. Everything runs in the browser and the site is hosted on GitHub Pages.
+**Free online tool: turn a Rubik's Cube algorithm into a printable PDF of numbered, illustrated steps.** Type a move sequence in standard notation (`F L F U' R U F2 L2 U'`) and get an A4 sheet showing the 3x3 cube before each move, with an arrow on the layer to turn. Ideal for teaching a solution, sharing an algorithm or making a cube-solving tutorial.
+
+**Try it: <https://neolao.github.io/cubing-steps-generator/>**
+
+Everything runs in the browser (no upload, no account) and the site is hosted on GitHub Pages.
 
 <!-- vibe:begin:features -->
 - Type a move sequence such as `F L F U' R U` and see the numbered steps as you type.

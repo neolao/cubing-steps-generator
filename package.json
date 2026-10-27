@@ -15,8 +15,18 @@
 		"type": "git",
 		"url": "git+https://github.com/neolao/cubing-steps-generator.git"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"rubiks-cube",
+		"cube",
+		"speedcubing",
+		"algorithm",
+		"move-notation",
+		"solution",
+		"tutorial",
+		"pdf-generator",
+		"typescript"
+	],
+	"author": "neolao",
 	"license": "MIT",
 	"type": "module",
 	"bugs": {
