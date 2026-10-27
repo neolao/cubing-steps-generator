@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Users can now write the middle layer move `M` (the vertical slice between the left and right faces, turning like the left face), with `M'`, `M2` and `M3`; its arrow runs down the middle column of the cube.
+
 - The page is now optimized for search engines: a descriptive title and summary, a preview image and card when the link is shared, a site icon, a short text section explaining the notation and the PDF, and the files that help search engines discover the site.
 
 ## [1.1.1] - 2026-10-04

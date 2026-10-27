@@ -14,6 +14,7 @@ function move(notation: string): Move {
 // front face (F) or the right face (R) of the isometric cube, on the moved layer.
 //   U / D  -> top / bottom row of the front face, travelling left / right
 //   L / R  -> left / right column of the front face, travelling down / up
+//   M      -> middle column of the front face, travelling down (like L)
 //   F / B  -> front / back column of the right face, travelling down / up
 const CLOCKWISE: Record<string, Omit<ArrowSpec, "repeat">> = {
 	U: { surface: "F", axis: "x", line: 1, sign: -1 },
@@ -22,6 +23,7 @@ const CLOCKWISE: Record<string, Omit<ArrowSpec, "repeat">> = {
 	R: { surface: "F", axis: "y", line: 1, sign: 1 },
 	F: { surface: "R", axis: "y", line: 1, sign: -1 },
 	B: { surface: "R", axis: "y", line: -1, sign: 1 },
+	M: { surface: "F", axis: "y", line: 0, sign: -1 },
 };
 
 describe("arrowFor", () => {
@@ -87,6 +89,7 @@ const AXIS: Record<string, Vec3> = {
 	L: [-1, 0, 0],
 	F: [0, 0, 1],
 	B: [0, 0, -1],
+	M: [-1, 0, 0],
 };
 
 function velocity([k0, k1, k2]: Vec3, [p0, p1, p2]: Vec3): Vec3 {
@@ -102,7 +105,7 @@ function pointOnArrow(arrow: ArrowSpec): Vec3 {
 }
 
 describe("arrow direction follows the stickers", () => {
-	const notations = FACES.flatMap((face) => [face, `${face}'`]);
+	const notations = [...FACES, "M"].flatMap((face) => [face, `${face}'`]);
 
 	it.each(notations)(
 		"%s arrow points where the layer's stickers travel",
@@ -128,7 +131,7 @@ describe("arrow direction follows the stickers", () => {
 			const depth = p[0] * k[0] + p[1] * k[1] + p[2] * k[2];
 			// The point sits on the moved layer: its coordinate along the turning axis is 1,
 			// or it is on the face being turned (1.5 when the arrow surface is that face).
-			expect([1, 1.5]).toContain(depth);
+			expect(depth === 0 || depth === 1 || depth === 1.5).toBe(true);
 		},
 	);
 });

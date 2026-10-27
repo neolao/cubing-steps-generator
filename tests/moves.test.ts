@@ -49,6 +49,31 @@ describe("parseSequence", () => {
 		expect(parseSequence("  \n ")).toEqual({ ok: true, moves: [] });
 	});
 
+	it.each(["M", "M'", "M2", "M3"])(
+		"accepts the middle layer move %s",
+		(token) => {
+			const result = parseSequence(`U ${token}`);
+			expect(result.ok && result.moves.map((m) => m.notation)).toEqual([
+				"U",
+				token,
+			]);
+		},
+	);
+
+	it("reports a bad suffix for M4", () => {
+		expect(parseSequence("M M4")).toEqual({
+			ok: false,
+			error: { kind: "bad-suffix", token: "M4", position: 2 },
+		});
+	});
+
+	it("rejects lowercase m as an unsupported move", () => {
+		expect(parseSequence("m")).toEqual({
+			ok: false,
+			error: { kind: "unknown-face", token: "m", position: 1 },
+		});
+	});
+
 	it("reports an unknown face with its 1-based position", () => {
 		expect(parseSequence("F L X U")).toEqual({
 			ok: false,

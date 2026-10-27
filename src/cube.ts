@@ -1,4 +1,4 @@
-import type { Face, Move } from "./moves";
+import type { Face, Layer, Move } from "./moves";
 
 export type Color = "yellow" | "orange" | "green" | "white" | "red" | "blue";
 
@@ -110,10 +110,22 @@ const INDEX_BY_KEY = new Map(
 	STICKERS.map((s) => [key(s.position, FACE_NORMAL[s.face]), s.index] as const),
 );
 
-function quarterTurnDestinations(layerFace: Face): readonly number[] {
-	const axis = FACE_NORMAL[layerFace];
+/** The turn axis of a layer and the coordinate along it where the layer sits (M turns like L, in the middle). */
+const LAYER_TURN: Record<Layer, { face: Face; depth: number }> = {
+	U: { face: "U", depth: 1 },
+	D: { face: "D", depth: 1 },
+	L: { face: "L", depth: 1 },
+	R: { face: "R", depth: 1 },
+	F: { face: "F", depth: 1 },
+	B: { face: "B", depth: 1 },
+	M: { face: "L", depth: 0 },
+};
+
+function quarterTurnDestinations(layer: Layer): readonly number[] {
+	const { face, depth } = LAYER_TURN[layer];
+	const axis = FACE_NORMAL[face];
 	return STICKERS.map((s) => {
-		if (dot(s.position, axis) !== 1) {
+		if (dot(s.position, axis) !== depth) {
 			return s.index;
 		}
 		const position = rotateClockwise(axis, s.position);
@@ -123,13 +135,14 @@ function quarterTurnDestinations(layerFace: Face): readonly number[] {
 }
 
 /** For each clockwise quarter turn: destination index of every sticker (`destinations[from] = to`). */
-const QUARTER_TURN_DESTINATIONS: Record<Face, readonly number[]> = {
+const QUARTER_TURN_DESTINATIONS: Record<Layer, readonly number[]> = {
 	U: quarterTurnDestinations("U"),
 	D: quarterTurnDestinations("D"),
 	L: quarterTurnDestinations("L"),
 	R: quarterTurnDestinations("R"),
 	F: quarterTurnDestinations("F"),
 	B: quarterTurnDestinations("B"),
+	M: quarterTurnDestinations("M"),
 };
 
 function colorAt(direction: Vec): Color {
@@ -174,9 +187,9 @@ export function solvedCube(
 	return FACE_ORDER.flatMap((face) => Array<Color>(9).fill(faceColor[face]));
 }
 
-function quarterTurn(state: CubeState, face: Face): CubeState {
+function quarterTurn(state: CubeState, layer: Layer): CubeState {
 	const next = [...state];
-	QUARTER_TURN_DESTINATIONS[face].forEach((destination, from) => {
+	QUARTER_TURN_DESTINATIONS[layer].forEach((destination, from) => {
 		next[destination] = state[from] as Color;
 	});
 	return next;

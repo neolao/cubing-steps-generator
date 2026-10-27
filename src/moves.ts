@@ -1,8 +1,13 @@
 export const FACES = ["U", "D", "L", "R", "F", "B"] as const;
 export type Face = (typeof FACES)[number];
 
+/** What a move turns: a face, or the middle layer between L and R. */
+export type Layer = Face | "M";
+
+const LAYERS: readonly Layer[] = [...FACES, "M"];
+
 export interface Move {
-	face: Face;
+	face: Layer;
 	/** -1 = counter-clockwise quarter turn; 1 or more = that many clockwise quarter turns (L3 = 3). */
 	turns: number;
 	notation: string;
@@ -31,7 +36,7 @@ function parseTurns(suffix: string): number | null {
 }
 
 function parseToken(token: string, position: number): Move | SequenceError {
-	const face = FACES.find((candidate) => candidate === token[0]);
+	const face = LAYERS.find((candidate) => candidate === token[0]);
 	if (!face) {
 		return { kind: "unknown-face", token, position };
 	}

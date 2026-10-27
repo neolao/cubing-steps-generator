@@ -54,6 +54,8 @@ const CLOCKWISE_FROM_SOLVED: Record<string, string> = {
 	D: "UUUUUUUUU RRRRRRFFF FFFFFFLLL DDDDDDDDD LLLLLLBBB BBBBBBRRR",
 	L: "BUUBUUBUU RRRRRRRRR UFFUFFUFF FDDFDDFDD LLLLLLLLL BBDBBDBBD",
 	B: "RRRUUUUUU RRDRRDRRD FFFFFFFFF DDDDDDLLL ULLULLULL BBBBBBBBB",
+	// M turns the middle layer the same way as L: its strips are the middle columns.
+	M: "UBUUBUUBU RRRRRRRRR FUFFUFFUF DFDDFDDFD LLLLLLLLL BDBBDBBDB",
 };
 
 describe("solvedCube", () => {
@@ -72,7 +74,7 @@ describe("applyMove", () => {
 		},
 	);
 
-	it.each(["U", "D", "L", "R", "F", "B"])(
+	it.each(["U", "D", "L", "R", "F", "B", "M"])(
 		"four %s quarter turns restore the cube",
 		(face) => {
 			expect(asString(sequence(`${face} ${face} ${face} ${face}`))).toBe(
@@ -81,11 +83,11 @@ describe("applyMove", () => {
 		},
 	);
 
-	it.each(["U", "D", "L", "R", "F", "B"])("%s' undoes %s", (face) => {
+	it.each(["U", "D", "L", "R", "F", "B", "M"])("%s' undoes %s", (face) => {
 		expect(asString(sequence(`${face} ${face}'`))).toBe(SOLVED);
 	});
 
-	it.each(["U", "D", "L", "R", "F", "B"])(
+	it.each(["U", "D", "L", "R", "F", "B", "M"])(
 		"%s2 equals two quarter turns",
 		(face) => {
 			expect(asString(sequence(`${face}2`))).toBe(
@@ -94,11 +96,11 @@ describe("applyMove", () => {
 		},
 	);
 
-	it.each(["U", "D", "L", "R", "F", "B"])("%s3 equals %s'", (face) => {
+	it.each(["U", "D", "L", "R", "F", "B", "M"])("%s3 equals %s'", (face) => {
 		expect(asString(sequence(`${face}3`))).toBe(asString(sequence(`${face}'`)));
 	});
 
-	it.each(["U", "D", "L", "R", "F", "B"])(
+	it.each(["U", "D", "L", "R", "F", "B", "M"])(
 		"four turns of %s leave the cube unchanged",
 		(face) => {
 			expect(asString(sequence(`${face} ${face} ${face} ${face}`))).toBe(
@@ -106,6 +108,20 @@ describe("applyMove", () => {
 			);
 		},
 	);
+
+	it("leaves the left and right faces untouched when turning M", () => {
+		const state = sequence("M");
+		expect(asString(state).slice(9, 18)).toBe("RRRRRRRRR");
+		expect(asString(state).slice(36, 45)).toBe("LLLLLLLLL");
+	});
+
+	it("rotates the whole cube like L R' M, so the centers move with it", () => {
+		const state = sequence("L R' M");
+		const centers = [4, 13, 22, 31, 40, 49].map(
+			(index) => LETTER_BY_COLOR[state[index] as Color],
+		);
+		expect(centers.join("")).toBe("BRUFLD");
+	});
 
 	it("does not mutate the previous state", () => {
 		const before = solvedCube();

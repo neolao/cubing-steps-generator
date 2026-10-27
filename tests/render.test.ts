@@ -154,7 +154,7 @@ describe("buildScene arrow", () => {
 	});
 
 	it("stays inside the cube bounds for all 18 moves", () => {
-		for (const face of ["U", "D", "L", "R", "F", "B"]) {
+		for (const face of ["U", "D", "L", "R", "F", "B", "M"]) {
 			for (const suffix of ["", "'", "2"]) {
 				const { arrow } = buildScene(
 					solvedCube(),
@@ -179,20 +179,23 @@ describe("buildScene repeat marker", () => {
 		expect(buildScene(solvedCube(), firstMove("F'")).marker).toBeNull();
 	});
 
-	it("sits beside the arrow without covering it", () => {
-		const { arrow, marker } = buildScene(solvedCube(), firstMove("L2"));
-		const center = marker?.center as Point;
-		const arrowMid: Point = [
-			(arrow.tip[0] + arrow.tail[0]) / 2,
-			(arrow.tip[1] + arrow.tail[1]) / 2,
-		];
-		const distance = Math.hypot(
-			center[0] - arrowMid[0],
-			center[1] - arrowMid[1],
-		);
-		expect(distance).toBeGreaterThan(1.3);
-		expect(distance).toBeLessThan(2);
-	});
+	it.each(["L2", "M2", "R2"])(
+		"sits beside the arrow of %s without covering it",
+		(notation) => {
+			const { arrow, marker } = buildScene(solvedCube(), firstMove(notation));
+			const center = marker?.center as Point;
+			const arrowMid: Point = [
+				(arrow.tip[0] + arrow.tail[0]) / 2,
+				(arrow.tip[1] + arrow.tail[1]) / 2,
+			];
+			const distance = Math.hypot(
+				center[0] - arrowMid[0],
+				center[1] - arrowMid[1],
+			);
+			expect(distance).toBeGreaterThan(1.3);
+			expect(distance).toBeLessThan(2);
+		},
+	);
 });
 
 describe("sceneToSvg", () => {

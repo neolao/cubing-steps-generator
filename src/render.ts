@@ -149,11 +149,12 @@ export function buildScene(state: CubeState, move: Move): CubeScene {
 	const { stickers } = buildFinalScene(state);
 	const spec = arrowFor(move);
 	const frame = arrowFrame(spec);
-	// The marker moves from the arrow towards the middle of the face.
+	// The marker moves from the arrow towards the middle of the face (towards the right for M, which is in it).
+	const markerSide = spec.line === 0 ? 1 : -spec.line;
 	const markerCenter = add(
 		frame.center,
 		frame.across,
-		-spec.line * MARKER_OFFSET,
+		markerSide * MARKER_OFFSET,
 	);
 	return {
 		stickers,

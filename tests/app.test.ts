@@ -94,7 +94,7 @@ describe("invalid sequence", () => {
 		const { q, input } = ctx;
 		expect(q("#sequence-error").hidden).toBe(false);
 		expect(q("#sequence-error").textContent).toBe(
-			"Move 3 'X' is not a cube face. Use U, D, L, R, F or B.",
+			"Move 3 'X' is not a cube face. Use U, D, L, R, F, B or M.",
 		);
 		expect(input.getAttribute("aria-invalid")).toBe("true");
 		expect(input.getAttribute("aria-describedby")).toContain("sequence-error");
@@ -331,7 +331,7 @@ describe("starting sequence", () => {
 		typeIn(q("#start-sequence"), "R X U");
 		expect(q("#start-error").hidden).toBe(false);
 		expect(q("#start-error").textContent).toBe(
-			"Starting sequence: Move 2 'X' is not a cube face. Use U, D, L, R, F or B.",
+			"Starting sequence: Move 2 'X' is not a cube face. Use U, D, L, R, F, B or M.",
 		);
 		expect(q("#start-sequence").getAttribute("aria-invalid")).toBe("true");
 		expect(q("#start-sequence").getAttribute("aria-describedby")).toContain(
