@@ -3,7 +3,7 @@
 
 ## Modules
 - [`modules/moves.md`](modules/moves.md) — strict move sequence parsing and error wording
-- [`modules/cube.md`](modules/cube.md) — cube simulation applying the 24 moves
+- [`modules/cube.md`](modules/cube.md) — cube simulation applying the 36 moves
 - [`modules/drawing.md`](modules/drawing.md) — arrow placement and isometric SVG drawing of a cube
 - [`modules/sheet.md`](modules/sheet.md) — A4 layout, pagination and SVG pages
 - [`modules/pdf.md`](modules/pdf.md) — SVG pages to vector PDF

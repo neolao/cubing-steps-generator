@@ -1,10 +1,10 @@
 export const FACES = ["U", "D", "L", "R", "F", "B"] as const;
 export type Face = (typeof FACES)[number];
 
-/** What a move turns: a face, or the middle layer between L and R. */
-export type Layer = Face | "M";
+/** What a move turns: a face, or a middle slice (M between L and R, E between U and D, S between F and B). */
+export type Layer = Face | "M" | "E" | "S";
 
-const LAYERS: readonly Layer[] = [...FACES, "M"];
+const LAYERS: readonly Layer[] = [...FACES, "M", "E", "S"];
 
 export interface Move {
 	face: Layer;

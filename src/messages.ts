@@ -12,7 +12,7 @@ export function describeError({
 		return `${where} is not valid. Write it ${face}, ${face}', ${face}2 or ${face}3 (a repeat of 2 or 3).`;
 	}
 	if (/^[a-z]/.test(token)) {
-		return `${where} is not supported. Use the capital letters U, D, L, R, F, B or M.`;
+		return `${where} is not supported. Use the capital letters U, D, L, R, F, B, M, E or S.`;
 	}
-	return `${where} is not a cube face. Use U, D, L, R, F, B or M.`;
+	return `${where} is not a cube face. Use U, D, L, R, F, B, M, E or S.`;
 }

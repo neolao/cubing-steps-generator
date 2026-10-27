@@ -15,6 +15,8 @@ function move(notation: string): Move {
 //   U / D  -> top / bottom row of the front face, travelling left / right
 //   L / R  -> left / right column of the front face, travelling down / up
 //   M      -> middle column of the front face, travelling down (like L)
+//   E      -> middle row of the front face, travelling right (like D)
+//   S      -> middle column of the right face, travelling down (like F)
 //   F / B  -> front / back column of the right face, travelling down / up
 const CLOCKWISE: Record<string, Omit<ArrowSpec, "repeat">> = {
 	U: { surface: "F", axis: "x", line: 1, sign: -1 },
@@ -24,6 +26,8 @@ const CLOCKWISE: Record<string, Omit<ArrowSpec, "repeat">> = {
 	F: { surface: "R", axis: "y", line: 1, sign: -1 },
 	B: { surface: "R", axis: "y", line: -1, sign: 1 },
 	M: { surface: "F", axis: "y", line: 0, sign: -1 },
+	E: { surface: "F", axis: "x", line: 0, sign: 1 },
+	S: { surface: "R", axis: "y", line: 0, sign: -1 },
 };
 
 describe("arrowFor", () => {
@@ -90,6 +94,8 @@ const AXIS: Record<string, Vec3> = {
 	F: [0, 0, 1],
 	B: [0, 0, -1],
 	M: [-1, 0, 0],
+	E: [0, -1, 0],
+	S: [0, 0, 1],
 };
 
 function velocity([k0, k1, k2]: Vec3, [p0, p1, p2]: Vec3): Vec3 {
@@ -105,7 +111,10 @@ function pointOnArrow(arrow: ArrowSpec): Vec3 {
 }
 
 describe("arrow direction follows the stickers", () => {
-	const notations = [...FACES, "M"].flatMap((face) => [face, `${face}'`]);
+	const notations = [...FACES, "M", "E", "S"].flatMap((face) => [
+		face,
+		`${face}'`,
+	]);
 
 	it.each(notations)(
 		"%s arrow points where the layer's stickers travel",

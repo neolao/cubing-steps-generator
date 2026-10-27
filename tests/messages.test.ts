@@ -13,13 +13,13 @@ function errorFor(text: string) {
 describe("describeError", () => {
 	it("names the unknown face and its position", () => {
 		expect(describeError(errorFor("F L X U"))).toBe(
-			"Move 3 'X' is not a cube face. Use U, D, L, R, F, B or M.",
+			"Move 3 'X' is not a cube face. Use U, D, L, R, F, B, M, E or S.",
 		);
 	});
 
 	it("explains that lowercase and wide moves are not supported", () => {
 		expect(describeError(errorFor("F r"))).toBe(
-			"Move 2 'r' is not supported. Use the capital letters U, D, L, R, F, B or M.",
+			"Move 2 'r' is not supported. Use the capital letters U, D, L, R, F, B, M, E or S.",
 		);
 	});
 

@@ -110,7 +110,7 @@ const INDEX_BY_KEY = new Map(
 	STICKERS.map((s) => [key(s.position, FACE_NORMAL[s.face]), s.index] as const),
 );
 
-/** The turn axis of a layer and the coordinate along it where the layer sits (M turns like L, in the middle). */
+/** The turn axis of a layer and the coordinate along it where the layer sits (a slice turns like a face but sits in the middle: M like L, E like D, S like F). */
 const LAYER_TURN: Record<Layer, { face: Face; depth: number }> = {
 	U: { face: "U", depth: 1 },
 	D: { face: "D", depth: 1 },
@@ -119,6 +119,8 @@ const LAYER_TURN: Record<Layer, { face: Face; depth: number }> = {
 	F: { face: "F", depth: 1 },
 	B: { face: "B", depth: 1 },
 	M: { face: "L", depth: 0 },
+	E: { face: "D", depth: 0 },
+	S: { face: "F", depth: 0 },
 };
 
 function quarterTurnDestinations(layer: Layer): readonly number[] {
@@ -143,6 +145,8 @@ const QUARTER_TURN_DESTINATIONS: Record<Layer, readonly number[]> = {
 	F: quarterTurnDestinations("F"),
 	B: quarterTurnDestinations("B"),
 	M: quarterTurnDestinations("M"),
+	E: quarterTurnDestinations("E"),
+	S: quarterTurnDestinations("S"),
 };
 
 function colorAt(direction: Vec): Color {

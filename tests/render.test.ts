@@ -154,7 +154,7 @@ describe("buildScene arrow", () => {
 	});
 
 	it("stays inside the cube bounds for all 18 moves", () => {
-		for (const face of ["U", "D", "L", "R", "F", "B", "M"]) {
+		for (const face of ["U", "D", "L", "R", "F", "B", "M", "E", "S"]) {
 			for (const suffix of ["", "'", "2"]) {
 				const { arrow } = buildScene(
 					solvedCube(),
@@ -179,7 +179,7 @@ describe("buildScene repeat marker", () => {
 		expect(buildScene(solvedCube(), firstMove("F'")).marker).toBeNull();
 	});
 
-	it.each(["L2", "M2", "R2"])(
+	it.each(["L2", "M2", "R2", "E2", "S2"])(
 		"sits beside the arrow of %s without covering it",
 		(notation) => {
 			const { arrow, marker } = buildScene(solvedCube(), firstMove(notation));

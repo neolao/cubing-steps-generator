@@ -23,7 +23,7 @@ src/
   app.ts              # page UI: field, validation, preview, download
   messages.ts         # user-facing error texts
   moves.ts            # strict move sequence parsing
-  cube.ts             # facelet cube model, applies the 24 moves
+  cube.ts             # facelet cube model, applies the 36 moves
   arrows.ts           # where each move's arrow is drawn
   render.ts           # isometric SVG drawing of one cube
   layout.ts           # A4 grid, size adaptation, pagination (30 steps per page)

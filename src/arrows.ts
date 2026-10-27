@@ -17,7 +17,7 @@ export interface ArrowSpec {
 	repeat: number;
 }
 
-/** Arrow of a clockwise quarter turn of each face; M turns like L. */
+/** Arrow of a clockwise quarter turn of each face; the slices turn like a face: M like L, E like D, S like F. */
 const CLOCKWISE_ARROW: Record<Layer, Omit<ArrowSpec, "repeat">> = {
 	U: { surface: "F", axis: "x", line: 1, sign: -1 },
 	D: { surface: "F", axis: "x", line: -1, sign: 1 },
@@ -26,6 +26,8 @@ const CLOCKWISE_ARROW: Record<Layer, Omit<ArrowSpec, "repeat">> = {
 	F: { surface: "R", axis: "y", line: 1, sign: -1 },
 	B: { surface: "R", axis: "y", line: -1, sign: 1 },
 	M: { surface: "F", axis: "y", line: 0, sign: -1 },
+	E: { surface: "F", axis: "x", line: 0, sign: 1 },
+	S: { surface: "R", axis: "y", line: 0, sign: -1 },
 };
 
 export function arrowFor(move: Move): ArrowSpec {

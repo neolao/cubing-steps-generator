@@ -81,7 +81,7 @@ describe("indexable text", () => {
 	it("explains the notation and mentions the PDF in plain text", () => {
 		const text = page.querySelector("section.about")?.textContent ?? "";
 		expect(text).toMatch(/clockwise/);
-		expect(text).toMatch(/M \(middle/);
+		expect(text).toMatch(/M \(middle.*E \(equator.*S \(standing/s);
 		expect(text).toMatch(/PDF/);
 		expect(text).toMatch(/browser/);
 	});

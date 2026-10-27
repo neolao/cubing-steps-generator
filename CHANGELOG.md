@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Users can now write the other two middle layer moves: `E` (the horizontal slice between the top and bottom faces, turning like the bottom face) and `S` (the slice between the front and back faces, turning like the front face), with `'`, `2` and `3` like any other move.
+
 ## [1.2.0] - 2026-10-27
 
 ### Added

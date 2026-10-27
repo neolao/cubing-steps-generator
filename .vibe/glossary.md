@@ -1,7 +1,7 @@
 # Ubiquitous Language
 
 ## Move
-One turn of a cube face, or of the middle layer M, in standard notation: a face letter (U, D, L, R, F, B) or M, optionally followed by `'` for a counter-clockwise turn or a repeat count (`2` or `3`).
+One turn of a cube face or of a middle layer, in standard notation: a face letter (U, D, L, R, F, B) or a middle layer letter (M, E, S), optionally followed by `'` for a counter-clockwise turn or a repeat count (`2` or `3`).
 _Sources: `src/moves.ts`_
 
 ## Move sequence
@@ -18,7 +18,7 @@ The printable result: steps in a grid of three to five columns on A4 pages, at m
 _Sources: `src/layout.ts`, `src/sheet.ts`_
 
 ## Layer
-The slice of the cube that a move turns (a face layer, or the middle layer for M, which turns like L). The arrow of a step lies along its layer, on the visible edge when the layer is on a hidden face.
+The slice of the cube that a move turns (a face layer, or a middle layer: M turns like L, E like D, S like F). The arrow of a step lies along its layer, on the visible edge when the layer is on a hidden face.
 _Sources: `src/arrows.ts`_
 
 ## Repeated move

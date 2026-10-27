@@ -49,8 +49,8 @@ describe("parseSequence", () => {
 		expect(parseSequence("  \n ")).toEqual({ ok: true, moves: [] });
 	});
 
-	it.each(["M", "M'", "M2", "M3"])(
-		"accepts the middle layer move %s",
+	it.each(["M", "M'", "M2", "M3", "E", "E'", "E2", "S", "S'", "S3"])(
+		"accepts the slice move %s",
 		(token) => {
 			const result = parseSequence(`U ${token}`);
 			expect(result.ok && result.moves.map((m) => m.notation)).toEqual([

@@ -56,6 +56,9 @@ const CLOCKWISE_FROM_SOLVED: Record<string, string> = {
 	B: "RRRUUUUUU RRDRRDRRD FFFFFFFFF DDDDDDLLL ULLULLULL BBBBBBBBB",
 	// M turns the middle layer the same way as L: its strips are the middle columns.
 	M: "UBUUBUUBU RRRRRRRRR FUFFUFFUF DFDDFDDFD LLLLLLLLL BDBBDBBDB",
+	// E turns like D (the front goes to the right), S like F (the top goes to the right).
+	E: "UUUUUUUUU RRRFFFRRR FFFLLLFFF DDDDDDDDD LLLBBBLLL BBBRRRBBB",
+	S: "UUULLLUUU RURRURRUR FFFFFFFFF DDDRRRDDD LDLLDLLDL BBBBBBBBB",
 };
 
 describe("solvedCube", () => {
@@ -74,7 +77,7 @@ describe("applyMove", () => {
 		},
 	);
 
-	it.each(["U", "D", "L", "R", "F", "B", "M"])(
+	it.each(["U", "D", "L", "R", "F", "B", "M", "E", "S"])(
 		"four %s quarter turns restore the cube",
 		(face) => {
 			expect(asString(sequence(`${face} ${face} ${face} ${face}`))).toBe(
@@ -83,11 +86,14 @@ describe("applyMove", () => {
 		},
 	);
 
-	it.each(["U", "D", "L", "R", "F", "B", "M"])("%s' undoes %s", (face) => {
-		expect(asString(sequence(`${face} ${face}'`))).toBe(SOLVED);
-	});
+	it.each(["U", "D", "L", "R", "F", "B", "M", "E", "S"])(
+		"%s' undoes %s",
+		(face) => {
+			expect(asString(sequence(`${face} ${face}'`))).toBe(SOLVED);
+		},
+	);
 
-	it.each(["U", "D", "L", "R", "F", "B", "M"])(
+	it.each(["U", "D", "L", "R", "F", "B", "M", "E", "S"])(
 		"%s2 equals two quarter turns",
 		(face) => {
 			expect(asString(sequence(`${face}2`))).toBe(
@@ -96,11 +102,16 @@ describe("applyMove", () => {
 		},
 	);
 
-	it.each(["U", "D", "L", "R", "F", "B", "M"])("%s3 equals %s'", (face) => {
-		expect(asString(sequence(`${face}3`))).toBe(asString(sequence(`${face}'`)));
-	});
+	it.each(["U", "D", "L", "R", "F", "B", "M", "E", "S"])(
+		"%s3 equals %s'",
+		(face) => {
+			expect(asString(sequence(`${face}3`))).toBe(
+				asString(sequence(`${face}'`)),
+			);
+		},
+	);
 
-	it.each(["U", "D", "L", "R", "F", "B", "M"])(
+	it.each(["U", "D", "L", "R", "F", "B", "M", "E", "S"])(
 		"four turns of %s leave the cube unchanged",
 		(face) => {
 			expect(asString(sequence(`${face} ${face} ${face} ${face}`))).toBe(
